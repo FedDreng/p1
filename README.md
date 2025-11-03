@@ -1,5 +1,7 @@
-# P1 - A Product that Solves a Problem
-## P1 – Parking Lots 
+# AAU-Park (Parking Lot Manager for AAU) 
+
+## P1 - A Product that Solves a Problem
+## Parking Lots 
 ### Overview
 
 This project is part of our university’s P1 course, where we aim to identify and solve a real-world problem using technology. Our chosen focus is parking lots — specifically improving how drivers find available parking spaces efficiently.
