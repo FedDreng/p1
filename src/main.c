@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include "parkingLots.h"
 
 int main(void) {
 
-    printf("Hello, World!\n");
+    testFunc();
+
 
 
     return 0;

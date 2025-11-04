@@ -4,4 +4,6 @@ project(p1 C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(p1
-        src/main.c)
+        src/main.c
+        src/parkingLots.h
+        src/bestSpot.c)
