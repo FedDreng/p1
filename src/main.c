@@ -1,4 +1,9 @@
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
 #include "raylib.h"
+
+
+
 
 #define SCREEN_WIDTH (800)
 #define SCREEN_HEIGHT (450)
