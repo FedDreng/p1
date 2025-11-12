@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
-project(TodoList C)
+project(p1 C)
 set(CMAKE_C_STANDARD 99)
+#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # "For clangd LSP - Language Server Protocal. Makes it so LSP understand other folders"
 
 # --- Add Raylib ---
 include(FetchContent)
@@ -23,7 +24,7 @@ FetchContent_Declare(
 )
 FetchContent_GetProperties(raygui)
 if(NOT raygui_POPULATED)
-    FetchContent_Populate(raygui)
+  FetchContent_MakeAvailable(raygui)
 endif()
 
 # Include folder manually
