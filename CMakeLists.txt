@@ -23,7 +23,7 @@ FetchContent_Declare(
 )
 FetchContent_GetProperties(raygui)
 if(NOT raygui_POPULATED)
-    FetchContent_Populate(raygui)
+    FetchContent_MakeAvailable(raygui)
 endif()
 
 # Include folder manually
@@ -42,4 +42,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
 # Set ASSETS_PATH
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+
 
