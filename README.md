@@ -4,7 +4,7 @@
 ## Parking Lots 
 ### Overview
 
-This project is part of our university’s P1 course, where we aim to identify and solve a real-world problem using technology. Our chosen focus is parking lots — specifically improving how drivers find available parking spaces efficiently.
+This project is part of our university’s P1 course, where the aim is to identify and solve a real-world problem using technology. Our chosen focus is parking lots — specifically improving how drivers find available parking spaces efficiently.
 
 ### Goal
 
