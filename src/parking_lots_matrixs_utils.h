@@ -5,6 +5,7 @@ typedef enum { FALSE, TRUE } bool;
 
 typedef enum { handicaped, road, EV, parking_bay, obstacle } ParkingType;
 
+// structure that defines the sizes of the parking spaces depending on vechiles
 typedef struct {
   bool is_small;  // HATCHBACK
   bool is_medium; // SEDAN
