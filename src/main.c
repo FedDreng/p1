@@ -6,27 +6,30 @@
 #define SCREEN_WIDTH (800)
 #define SCREEN_HEIGHT (450)
 
+
+
 #define WINDOW_TITLE "Title"
 
 int main(void) {
 
-  readParkingLotFile();
+    readParkingLotFile();
 
-  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-  SetTargetFPS(60);
+    /*
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
+    SetTargetFPS(60);
 
-  createParkingLotGrid();
+    createParkingLotGrid();
 
-  while (!WindowShouldClose()) {
-    BeginDrawing();
+    while (!WindowShouldClose()) {
+        BeginDrawing();
 
-    ClearBackground(RAYWHITE);
-    showParkingGridRayLib();
+        ClearBackground(RAYWHITE);
+        showParkingGridRayLib();
 
-    EndDrawing();
-  }
+        EndDrawing();
+    }
 
-  CloseWindow();
+    CloseWindow();*/
 
-  return 0;
+    return 0;
 }

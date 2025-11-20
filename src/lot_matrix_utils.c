@@ -11,9 +11,51 @@
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dirent.h>
+#endif
+
+
+int countFiles(const char *folderPath) {
+    int count = 0;
+
+#ifdef _WIN32
+    WIN32_FIND_DATA data;
+    char searchPath[260];
+    sprintf(searchPath, "%s\\*.*", folderPath);
+
+    HANDLE hFind = FindFirstFile(searchPath, &data);
+    if (hFind == INVALID_HANDLE_VALUE) return -1;
+
+    do {
+        if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            count++;
+    } while (FindNextFile(hFind, &data));
+
+    FindClose(hFind);
+
+#else
+    DIR *dir = opendir(folderPath);
+    if (dir == NULL) return -1;
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_name[0] == '.') continue; // skip . and ..
+        count++;
+    }
+    closedir(dir);
+#endif
+
+    return count;
+}
+
 
 
 void readParkingLotFile(char *filename) {
+
+    printf("countfiles: %d\n", countFiles("../assets/parkingLots"));
 
     char buffer[256];
     FILE *fp = fopen("../assets/parkingLots/parkingGrid.txt", "r");
