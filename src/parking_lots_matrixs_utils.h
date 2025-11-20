@@ -20,9 +20,16 @@ typedef struct {
   ParkingType type;
 } lot;
 
-void parkingLotGrid();
+void createParkingLotGrid();
 
 void showParkingGridRayLib();
+
+void readParkingLotFile();
+
+extern int pee;
+
+#define GRID_WIDTH 7
+#define GRID_HEIGHT 7
 
 // the idea of the grid:
 // r r r r r r r
