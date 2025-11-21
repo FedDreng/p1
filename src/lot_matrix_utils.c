@@ -86,6 +86,8 @@ void createParkingLotGrid() {
       //readParkingLotFile(string);
   }*/
 
+  // setting the layout for the grid we are working with right now it is this
+  // (parkingGrid)
   ParkingType design[GRID_HEIGHT][GRID_WIDTH] = {
       {road, road, road, road, road, road, road},
       {road, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle},
@@ -103,22 +105,30 @@ void createParkingLotGrid() {
       parkingGrid[y][x].y = y;
       parkingGrid[y][x].type = design[y][x];
 
+      // setting out the parking lot size depending on type identifier
+      // (enum type)
       if (design[y][x] == parking_bay) {
-        parkingGrid[y][x].allowed = (carSize){true, true, true};
+        parkingGrid[y][x].allowed =
+            (carSize){true, true, true}; // small/med/large
       } else if (design[y][x] == handicaped) {
-        parkingGrid[y][x].allowed = (carSize){false, true, true}; // med + large
+        parkingGrid[y][x].allowed = (carSize){false, true, true}; // med/large
       } else if (design[y][x] == EV) {
         parkingGrid[y][x].allowed = (carSize){true, true, false}; // small/med
       } else {
-        parkingGrid[y][x].allowed = (carSize){false, false, false};
+        parkingGrid[y][x].allowed =
+            (carSize){false, false,
+                      false}; // no car is able to park here (obstacle, road)
       }
-
       // parkingGrid[y][x].lot_size = (carSize){false, true, false};
+
+      // setting the cell to being available
       parkingGrid[y][x].occupied = FALSE;
     }
   }
 }
 
+// Return a color depending on the identifier, this is used in the raylib
+// parkingGrid printer "showParkingGridRayLib"
 Color getParkingColor(ParkingType t) {
   switch (t) {
   case road:
@@ -141,41 +151,51 @@ void showParkingGridRayLib() {
   for (int y = 0; y < GRID_HEIGHT; y++) {
     for (int x = 0; x < GRID_WIDTH; x++) {
 
+      // set the current lot to be the same as the grid we work with right now
       lot *currentLot = &parkingGrid[y][x];
 
+      // creating the Rectangle for the spot / Cell
       Rectangle rect = {x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE};
 
+      // check if the parking lot is occupied
       if (currentLot->occupied)
         DrawRectangleRec(rect, DARKGRAY);
       else
+        // print the color for the specific identifier
         DrawRectangleRec(rect, getParkingColor(currentLot->type));
-
+      // set the border to black
       DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
     }
   }
 }
 
 //
+// Function to check if a car can fit in a given parking lot
 boolean canFit(carSize car, lot *currentLot) {
+
+  // If the lot is already occupied, the car cannot fit
   if (currentLot->occupied)
     return FALSE;
 
+  // Check if the lot type is one of the allowed types
+  // Only parking_bay, handicaped, or EV types are valid for parking
   if (currentLot->type != parking_bay && currentLot->type != handicaped &&
       currentLot->type != EV)
     return FALSE;
 
-  // small car fits anywhere small/medium/large
+  // Small cars can fit anywhere regardless of lot size
   if (car.is_small)
     return TRUE;
 
-  // medium fits medium or large
+  // Medium cars can fit in medium or large lots
   if (car.is_medium &&
       (currentLot->allowed.is_medium || currentLot->allowed.is_large))
     return TRUE;
 
-  // large fits only large
+  // Large cars can only fit in large lots
   if (car.is_large && currentLot->allowed.is_large)
     return TRUE;
 
+  // If none of the above conditions are met, the car cannot fit
   return FALSE;
 }

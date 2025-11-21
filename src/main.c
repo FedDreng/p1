@@ -19,21 +19,28 @@ int main(void) {
 
     showParkingGridRayLib();
 
-    // Mouse click logic
+    // Check if the left mouse button was just pressed
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 
-      int mx = GetMouseX() / CELL_SIZE;
-      int my = GetMouseY() / CELL_SIZE;
+      // Get the mouse coordinates in terms of grid cells
+      int mx = GetMouseX() / CELL_SIZE; // Convert pixel X to cell X
+      int my = GetMouseY() / CELL_SIZE; // Convert pixel Y to cell Y
 
+      // Check if the mouse click is within the grid bounds
       if (mx >= 0 && mx < GRID_WIDTH && my >= 0 && my < GRID_HEIGHT) {
 
+        // Get a pointer to the parking lot cell at the clicked location
         lot *currentLot = &parkingGrid[my][mx];
 
+        // Define a car of size small
         carSize myCar = {true, false, false}; // small car
 
+        // Check if the car can fit in the selected lot
         if (canFit(myCar, currentLot)) {
+          // Mark the lot as occupied if the car fits
           currentLot->occupied = TRUE;
         } else {
+          // Print a message if the car cannot fit in this lot
           printf("Car does NOT fit at (%d, %d)\n", mx, my);
         }
       }
