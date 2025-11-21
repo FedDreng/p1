@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(p1 C)
 set(CMAKE_C_STANDARD 99)
-#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # "For clangd LSP - Language Server Protocal. Makes it so LSP understand other folders"
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)  # "For clangd LSP - Language Server Protocal. Makes it so LSP understand other folders"
 
 # --- Add Raylib ---
 include(FetchContent)

@@ -3,31 +3,45 @@
 #include "raygui.h"
 #include "raylib.h"
 
-#define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (450)
-
-#define WINDOW_TITLE "Title"
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 450
 
 int main(void) {
 
-    readParkingLotFile();
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
+  SetTargetFPS(60);
 
-    /*
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-    SetTargetFPS(60);
+  createParkingLotGrid();
 
-    createParkingLotGrid();
+  while (!WindowShouldClose()) {
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
 
-    while (!WindowShouldClose()) {
-        BeginDrawing();
+    showParkingGridRayLib();
 
-        ClearBackground(RAYWHITE);
-        showParkingGridRayLib();
+    // Mouse click logic
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 
-        EndDrawing();
+      int mx = GetMouseX() / CELL_SIZE;
+      int my = GetMouseY() / CELL_SIZE;
+
+      if (mx >= 0 && mx < GRID_WIDTH && my >= 0 && my < GRID_HEIGHT) {
+
+        lot *currentLot = &parkingGrid[my][mx];
+
+        carSize myCar = {true, false, false}; // small car
+
+        if (canFit(myCar, currentLot)) {
+          currentLot->occupied = TRUE;
+        } else {
+          printf("Car does NOT fit at (%d, %d)\n", mx, my);
+        }
+      }
     }
 
-    CloseWindow();*/
+    EndDrawing();
+  }
 
-    return 0;
+  CloseWindow();
+  return 0;
 }

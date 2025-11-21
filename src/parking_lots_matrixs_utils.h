@@ -1,15 +1,15 @@
 #ifndef PARKING_H
 #define PARKING_H
 
-typedef enum { FALSE, TRUE } bool;
+typedef enum { FALSE, TRUE } boolean;
 
 typedef enum { handicaped, road, EV, parking_bay, obstacle } ParkingType;
 
 // structure that defines the sizes of the parking spaces depending on vehicles
 typedef struct {
-  bool is_small;  // HATCHBACK
-  bool is_medium; // SEDAN
-  bool is_large;  // SUV, TRUCK
+  boolean is_small;  // HATCHBACK
+  boolean is_medium; // SEDAN
+  boolean is_large;  // SUV, TRUCK
 } carSize;
 
 typedef struct {
@@ -18,7 +18,12 @@ typedef struct {
   carSize lot_size;
   // bool is_handicapped;
   ParkingType type;
+
+  boolean occupied;
+  carSize allowed;
 } lot;
+
+typedef struct Color Color;
 
 void createParkingLotGrid();
 
@@ -26,7 +31,13 @@ void showParkingGridRayLib();
 
 void readParkingLotFile();
 
+Color getParkingColor(ParkingType t);
+
+boolean canFit(carSize car, lot *currentLot);
+
 extern int pee;
+
+#define CELL_SIZE 50
 
 #define GRID_WIDTH 7
 #define GRID_HEIGHT 7
@@ -40,9 +51,6 @@ extern int pee;
 // r o o o o o o
 // r r r r r r r
 
-#define GRID_WIDTH 7
-#define GRID_HEIGHT 7
-
-lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
+extern lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
 #endif
