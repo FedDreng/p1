@@ -21,6 +21,10 @@ typedef struct {
 
   boolean occupied;
   carSize allowed;
+
+  // NEW FIELDS FOR PREFERENCES
+  int dist_to_university;
+  int dist_to_exit;
 } lot;
 
 typedef struct Color Color;
