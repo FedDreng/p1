@@ -32,9 +32,18 @@ int main(void) {
         input = GetCarInput(input);
 
         if (input.guiStep == 2) {
-            printf("Size: %d\n", input.car.size); // 1: small 2: medium 3: large
-            printf("Electric: %d\n", input.car.isElectric); // 0: false 1: true
-            printf("Handicap: %d\n", input.car.isHandicap); // 0: false 1: true
+
+            // Print the selected car size to the console
+            // 1 = small, 2 = medium, 3 = large
+            printf("Size: %d\n", input.car.size);
+
+            // Print whether the car is electric or not
+            // 0 = false, 1 = true
+            printf("Electric: %d\n", input.car.isElectric);
+
+            // Print whether the car is handicapped-accessible
+            // 0 = false, 1 = true
+            printf("Handicap: %d\n", input.car.isHandicap);
            
             showParkingGridRayLib();
 
