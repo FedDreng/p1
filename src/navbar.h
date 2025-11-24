@@ -2,7 +2,13 @@
 #define NAVBAR_H
 
 // select element
-typedef enum { ChooseLot, ChooseSize, ChooseType, ELEMENT_COUNT } menuElement;
+typedef enum {
+  ChooseLot,
+  ChooseSize,
+  ChooseType,
+  ChooseBusyness,
+  ELEMENT_COUNT
+} menuElement;
 
 extern menuElement selectedElement;
 

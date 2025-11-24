@@ -1,7 +1,6 @@
 #include "navbar.h"
 #include "raygui.h"
 #include "raylib.h"
-#include <stdio.h>
 
 Rectangle navbar = {0, 0, 800, 60};
 Color navColor = (Color){240, 240, 240, 255};
@@ -9,7 +8,7 @@ Color navColor = (Color){240, 240, 240, 255};
 menuElement selectedElement = ChooseSize;
 
 const char *elementNames[ELEMENT_COUNT] = {"Choose Lot", "Choose Size",
-                                           "Choose Type"};
+                                           "Choose Type", "BusyNess"};
 
 menuElement navElementAssigner(int index) {
   if (index < 0 || index >= ELEMENT_COUNT)
