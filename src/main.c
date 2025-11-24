@@ -2,6 +2,7 @@
 #include "parking_lots_matrixs_utils.h"
 #include "raygui.h"
 #include "raylib.h"
+#include "Car_Input.h"
 #include "busyness_prediction.h"
 
 #define SCREEN_WIDTH (800)
@@ -10,15 +11,15 @@
 #define WINDOW_TITLE "Title"
 
 int main(void) {
+    CarProperties car = GetCarInput();
 
-    //readParkingLotFile();
+    readParkingLotFile();
     busynessCalculator();
-
     /*
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
-  createParkingLotGrid();
+    createParkingLotGrid();
 
   Car Car = {.size = {TRUE, FALSE, FALSE},
              .is_handicapped = FALSE,
@@ -36,6 +37,12 @@ int main(void) {
     EndDrawing();
   }
 
-  CloseWindow();
-  return 0;
+    CloseWindow();*/
+
+    return 0;
 }
+
+
+
+
+//printf("%d\n%d\n%d\n\n", car.size, car.isElectric, car.isHandicap);
