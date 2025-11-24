@@ -8,11 +8,15 @@
 
 int main(void) {
 
-  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
-  SetTargetFPS(60);
+  //InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
+  //SetTargetFPS(60);
 
-  createParkingLotGrid();
 
+  readParkingLotFile();
+
+  //createParkingLotGrid();
+
+  /*
   while (!WindowShouldClose()) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -42,6 +46,6 @@ int main(void) {
     EndDrawing();
   }
 
-  CloseWindow();
+  CloseWindow();*/
   return 0;
 }

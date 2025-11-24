@@ -6,10 +6,11 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
-/*
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -51,10 +52,11 @@ int countFiles(const char *folderPath) {
 }
 
 
-/*
 void readParkingLotFile(char *filename) {
 
-    printf("countfiles: %d\n", countFiles("../assets/parkingLots"));
+    int countedFiles = countFiles("../assets/parkingLots");
+
+    printf("countfiles: %d\n", countedFiles);
 
     char buffer[256];
     FILE *fp = fopen("../assets/parkingLots/parkingGrid.txt", "r");
@@ -63,28 +65,45 @@ void readParkingLotFile(char *filename) {
         printf("retard");
     }
 
+
+
+    /*
     // Read and print each line
     while (fgets(buffer, sizeof(buffer), fp) != NULL) {
         printf("%s", buffer);
-    }
+
+        if (buffer[0] == 'c') {
+          printf("among us");
+        }
+    }*/
+
+    //int* lotPee = malloc(countedFiles * sizeof(lot));
+
+    lot currentLot;
+    ParkingType designHere;
+  
+
+      int ch;
+      while ((ch = fgetc(fp)) != EOF) {
+
+        if (ch == '\n') {
+          printf("new line");
+        }
+        if (ch == 'c') {
+          printf("retard v2 ");
+          currentLot.type = obstacle;
+        }
+      }
+
 
     printf("\n");
 
+
+
+
 }
-*/
+
 void createParkingLotGrid() {
-
-  /*printf("How many files do you have?");
-  int filesP;
-  scanf("%d", &filesP);
-
-  //string
-
-  for (int i = 0; i < filesP; i++) {
-      printf("Write name of file 1 (must not contain spaces)");
-      //scanf("" *s);  todo: string which inputs to readParkingLotFile func;
-      //readParkingLotFile(string);
-  }*/
 
   ParkingType design[GRID_HEIGHT][GRID_WIDTH] = {
       {road, road, road, road, road, road, road},
