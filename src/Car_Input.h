@@ -3,7 +3,14 @@
 
 #include "Car_Types.h"
 
-CarProperties GetCarInput(void);
+typedef struct {
+    CarProperties car;
+    int guiStep;
+} CarInputState;
+
+CarInputState GetCarInput(CarInputState state);
+//CarProperties GetCarInput(void);
+
 
 #endif
 

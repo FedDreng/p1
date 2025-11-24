@@ -11,12 +11,10 @@
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
-    CarProperties car = GetCarInput();
 
-    readParkingLotFile();
-    busynessCalculator();
+    CarInputState input = {0};
+    //readParkingLotFile();
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
     //busynessCalculator();
     createParkingLotGrid();
@@ -24,17 +22,26 @@ int main(void) {
     Car Car = {.size = {TRUE, FALSE, FALSE},
     .is_handicapped = FALSE,
     .wants_uni_close = TRUE,
-    .wants_exit_close = FALSE};
+    .wants_exit_close = FALSE
+    };
 
     while (!WindowShouldClose()) {
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
 
-    showParkingGridRayLib();
+        input = GetCarInput(input);
 
-    assignCar(&Car);
-    // mouseAssigner();
-    EndDrawing();
+        if (input.guiStep == 2) {
+            printf("Size: %d\n", input.car.size); // 1: small 2: medium 3: large
+            printf("Electric: %d\n", input.car.isElectric); // 0: false 1: true
+            printf("Handicap: %d\n", input.car.isHandicap); // 0: false 1: true
+           
+            showParkingGridRayLib();
+
+            assignCar(&Car);
+            // mouseAssigner();
+        }
+        EndDrawing();
     }
 
     CloseWindow();
