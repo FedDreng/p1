@@ -1,7 +1,6 @@
 //
 // Created by fed on 11/20/25.
 //
-
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <stdio.h>
@@ -147,6 +146,13 @@ Color getParkingColor(ParkingType t) {
 }
 
 void showParkingGridRayLib() {
+  int gridWidth = GRID_WIDTH * CELL_SIZE;
+  int gridHeight = GRID_HEIGHT * CELL_SIZE;
+
+  int offsetX = (GetScreenWidth() - gridWidth) / 2;
+  int offsetY = ((GetScreenHeight() - gridHeight) / 2) +
+                60 / 2; // offset Y + the height of the navbar 60 / 2
+
   // Draw parking grid manually (so we can add occupied colors)
   for (int y = 0; y < GRID_HEIGHT; y++) {
     for (int x = 0; x < GRID_WIDTH; x++) {
@@ -155,7 +161,8 @@ void showParkingGridRayLib() {
       lot *currentLot = &parkingGrid[y][x];
 
       // creating the Rectangle for the spot / Cell
-      Rectangle rect = {x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+      Rectangle rect = {offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE,
+                        CELL_SIZE, CELL_SIZE};
 
       // check if the parking lot is occupied
       if (currentLot->occupied)
