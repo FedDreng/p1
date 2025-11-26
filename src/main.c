@@ -55,7 +55,7 @@ int main(void) {
     }
 
     if (selectedElement == ChooseBusyness) {
-      // THE BUSYNESS CALCULATION GUI
+      busynessCalculator();
     }
 
     EndDrawing();
