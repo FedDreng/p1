@@ -45,3 +45,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 # Set ASSETS_PATH
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
+
+# Linux needs access to syscall numbers and O_DIRECTORY
+#if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+#    message(STATUS "Configuring for Linux (using SYS_getdents syscall)")
+#    target_compile_definitions(listfiles PRIVATE __linux__)
+#endif()
+
+# Windows needs no extra libraries
+#if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+#    message(STATUS "Configuring for Windows (using popen + dir /b)")
+#endif()

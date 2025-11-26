@@ -2,6 +2,7 @@
 #include "Car_Input.h"
 #include "busyness_prediction.h"
 #include "car_assigner.h"
+#include "filecheck.h"
 #include "navbar.h"
 #include "parking_lots_matrixs_utils.h"
 #include "preferences.h"
@@ -21,10 +22,23 @@ int main(void) {
   // busynessCalculator();
   createParkingLotGrid();
 
+  const char *path = "../assets/parkingLots/";
+
+#ifdef __linux__
+  list_linux(path); // Use Linux implementation
+#else
+  list_windows(path); // Use Windows fallback
+#endif
+
   Car Car = {.size = {TRUE, FALSE, FALSE},
              .is_handicapped = FALSE,
              .wants_uni_close = TRUE,
              .wants_exit_close = FALSE};
+
+  // Car Car1 = {.size = {TRUE, FALSE, FALSE},
+  //             .is_handicapped = FALSE,
+  //             .wants_uni_close = TRUE,
+  //             .wants_exit_close = FALSE};
 
   while (!WindowShouldClose()) {
     BeginDrawing();
@@ -49,7 +63,8 @@ int main(void) {
       showParkingGridRayLib();
 
       assignCar(&Car);
-      // mouseAssigner();
+      // assignCar(&Car1);
+      //  mouseAssigner();
     }
 
     if (selectedElement == ChooseBusyness) {
