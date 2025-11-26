@@ -31,10 +31,9 @@ int main(void) {
 
     input = GetCarInput(input);
 
-    DrawNav();
-
     if (selectedElement == ChooseLot) {
 
+      DrawNav();
       // Print the selected car size to the console
       // 1 = small, 2 = medium, 3 = large
       printf("Size: %d\n", input.car.size);
