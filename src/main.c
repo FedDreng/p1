@@ -4,6 +4,7 @@
 #include "car_assigner.h"
 #include "navbar.h"
 #include "parking_lots_matrixs_utils.h"
+#include "preferences.h"
 #include "raygui.h"
 #include "raylib.h"
 
@@ -32,7 +33,6 @@ int main(void) {
     input = GetCarInput(input);
 
     if (selectedElement == ChooseLot) {
-
       DrawNav();
       // Print the selected car size to the console
       // 1 = small, 2 = medium, 3 = large
@@ -53,7 +53,7 @@ int main(void) {
     }
 
     if (selectedElement == ChooseBusyness) {
-      // THE BUSYNESS CALCULATION GUI
+      busynessCalculator();
     }
 
     EndDrawing();

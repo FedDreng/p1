@@ -1,7 +1,8 @@
 #include <stdio.h>
-
+#include "navbar.h"
+#include "raygui.h"
+#include "raylib.h"
 #include "busyness_prediction.h"
-
 #include <string.h>
 /*
  *Prototype til 2D array til at kunne kategorisere travlheden.
@@ -12,7 +13,7 @@ BusynessSchedule busynessSchedule();
  * Prototype til en funktion som tager data
  * Bruger dataen til at returnere en struct, hvorfra travlhed kan indlæses
 */
-Time userinput();
+Time userinput(int* step);
 /*
  * Returnere enum typen tilsvarende den indtastet dato.
 */
@@ -20,13 +21,22 @@ days getDay(char day[]);
 /*
  * Printer ud hvor travlt der er i det ønskede interval.
 */
-void printBusyness(Time chosenInput, BusynessSchedule schedule);
+void printBusyness(Time chosenInput, BusynessSchedule schedule, int* step);
+//Optegner en gui til at vælge en dag
+int getDayGui(int* step);
+//Optegner time intervallerner:
+int getHourGui(int* step);
 
 //Udregn travlhed (Hoved funktion)
 int busynessCalculator() {
+    //Variable til at holde styr på hvor langt man er.
+    static int step = 0;
+    //Starter overskrift
+    DrawText("Choose a day and a time.", 280, 80, 20, BLACK);
     BusynessSchedule busyness = busynessSchedule();
-    Time chosenTime = userinput();
-    printBusyness(chosenTime, busyness);
+    //Optegner alle elementerne til at vælge tidsrum.
+    Time chosenTime = userinput(&step);
+    printBusyness(chosenTime, busyness, &step);
 }
 
 //2D array til at kunne kategorisere travlheden.
@@ -59,62 +69,50 @@ BusynessSchedule busynessSchedule() {
     return b;
 }
 
+
 //Udførelse af userinput funktion
-Time userinput() {
+Time userinput(int* step) {
     //Tekststeng til at opbevare valg af dag.
     char day[3];
+    //Index til enum
     int dayIndex = 0;
+    //Index til time interval
     int hourIndex = 0;
-    //Start med at spørge bruger indtil dag
-    do {
-        //Tjekker om dagindexet er 7, hvilket er en error
-        if (dayIndex == 7) {
-            printf("The chosen input is not valid, please try again.\n");
-        }
-        //Spørger brugeren om en dag og scanner efterfølgende.
-        printf("Choose a day to check busyness: mon, tue, wed, thu, fri, sat, sun, \n>");
-        scanf(" %3s", day);
-        //Udregner enum dag værdien.
-        dayIndex = getDay(day);
-    }while (dayIndex == 7);
-    //Spørger brugeren indtil et tidsrum (Intervaller af 4 timer)
-    do {
-        if (hourIndex < 0 || hourIndex > 5) {
-            printf("The chosen input is not valid, it must be an integer between 0 and 5.\n");
-        }
-        printf("Choose an hour interval of the day:\n"
-               "0: 00:00 - 04:00\n"
-               "1: 04:00 - 08:00\n"
-               "2: 08:00 - 12:00\n"
-               "3: 12:00 - 16:00\n"
-               "4: 16:00 - 20:00\n"
-               "5: 20:00 - 24:00\n"
-               ">");
-        scanf(" %d", &hourIndex);
-    }while (hourIndex < 0 || hourIndex > 5);
+    //Tegn dag muligheder og få input
+    dayIndex = getDayGui(step);
+    //Tegn time muligheder og få input
+    hourIndex = getHourGui(step);
+    //Opret struct med valgt info.
     Time chosenTime;
     chosenTime.Day = dayIndex;
     chosenTime.hour = hourIndex;
     return chosenTime;
 }
 
-void printBusyness(Time chosenInput, BusynessSchedule schedule) {
+void printBusyness(Time chosenInput, BusynessSchedule schedule, int* step) {
     //Finder værdien fra 1 - 3 i vores schedule
-    int busynessValue = schedule.data[chosenInput.Day][chosenInput.hour];
+    int busynessValue;
     //Printer den tilsvarende værdi.
-    switch (busynessValue) {
-        case 1:
-            printf("The parking lot is not very busy at the chosen time\n");
-            break;
-        case 2:
-            printf("The parking lot is moderately busy at the chosen time\n");
-            break;
-        case 3:
-            printf("The parking lot is very busy at the chosen time\n");
-            break;
-        default:
-            printf("Could not find the busyness\n");
+    if (GuiButton((Rectangle){350, 350, 100, 25}, "Predict busyness") && *step == 2) {
+        *step = 3;
     }
+    if (*step == 3) {
+        busynessValue = schedule.data[chosenInput.Day][chosenInput.hour];
+        switch (busynessValue) {
+            case 1:
+                DrawText("The parking lot is not very busy at the chosen time.", 140, 400, 20, BLACK);
+                break;
+            case 2:
+                DrawText("The parking lot is moderately busy at the chosen time.", 120, 400, 20, BLACK);
+                break;
+            case 3:
+                DrawText("The parking lot is very busy at the chosen time", 150, 400, 20, BLACK);
+                break;
+            default:
+                printf("Could not find the busyness\n");
+        }
+    }
+
 }
 
 days getDay(char day[]) {
@@ -140,4 +138,77 @@ days getDay(char day[]) {
         return error;
     }
 
+}
+
+int getDayGui(int* step) {
+    static int dayIndex = 0;
+    //Optegn tekst til at beskrive det er dage
+    DrawText("Which day would you like to check?", 220, 160, 20, BLACK);
+    //Optegne mandag knap:
+    if (GuiButton((Rectangle){12, 200, 100, 25}, "Monday")) {
+        dayIndex = 0;
+        *step = 1;
+    }
+    //Optegn tirsdag:
+    if (GuiButton((Rectangle){124, 200, 100, 25}, "Tuesday")) {
+        dayIndex = 1;
+        *step = 1;
+    }
+    //Optegn onsdag:
+    if (GuiButton((Rectangle){236, 200, 100, 25}, "Wednesday")) {
+        dayIndex = 2;
+        *step = 1;
+    }
+    //Optegn torsdag:
+    if (GuiButton((Rectangle){348, 200, 100, 25}, "Thursday")) {
+        dayIndex = 3;
+        *step = 1;
+    }
+    //Optegn fredag:
+    if (GuiButton((Rectangle){460, 200, 100, 25}, "Friday")) {
+        dayIndex = 4;
+        *step = 1;
+    }
+    //Optegn lørdag:
+    if (GuiButton((Rectangle){572, 200, 100, 25}, "Saturday")) {
+        dayIndex = 5;
+        *step = 1;
+    }
+    //Optegn søndag:
+    if (GuiButton((Rectangle){684, 200, 100, 25}, "Sunday")) {
+        dayIndex = 6;
+        *step = 1;
+    }
+    return dayIndex;
+}
+
+int getHourGui(int* step) {
+    static int hour = 0;
+    DrawText("Which time interval would you like to check?", 180, 250, 20, BLACK);
+    if (GuiButton((Rectangle){28, 300, 100, 25}, "00:00 - 04:00")) {
+        hour = 0;
+        *step = 2;
+    }
+    if (GuiButton((Rectangle){156, 300, 100, 25}, "04:00 - 08:00")) {
+        hour = 1;
+        *step = 2;
+    }
+    if (GuiButton((Rectangle){284, 300, 100, 25}, "08:00 - 12:00")) {
+        hour = 2;
+        *step = 2;
+    }
+    if (GuiButton((Rectangle){412, 300, 100, 25}, "12:00 - 16:00")) {
+        hour = 3;
+        *step = 2;
+    }
+    if (GuiButton((Rectangle){540, 300, 100, 25}, "16:00 - 20:00")) {
+        hour = 4;
+        *step = 2;
+    }
+    if (GuiButton((Rectangle){668, 300, 100, 25}, "20:00 - 24:00")) {
+        hour = 5;
+        *step = 2;
+    }
+
+    return hour;
 }
