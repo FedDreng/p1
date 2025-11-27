@@ -1,5 +1,6 @@
 #define RAYGUI_IMPLEMENTATION
 #include "Car_Input.h"
+#include "Licenseplate.h"
 #include "busyness_prediction.h"
 #include "car_assigner.h"
 #include "filecheck.h"
@@ -25,6 +26,8 @@ int main(void) {
   getPreferences(0);
 
   const char *path = "../assets/parkingLots/";
+
+  licenseplate();
 
 #ifdef __linux__
   list_linux(path); // Use Linux implementation
