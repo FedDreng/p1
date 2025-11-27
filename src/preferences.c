@@ -22,7 +22,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
     numberOfProfiles++;
     printf("Profile: %d, Username: %s, License Plate: %s, Parking Preference: %d\n", numberOfProfiles, tempName, tempPlate, tempNum);
   }
-  printf("A total of %d profiles were loaded successfuly", numberOfProfiles);
+  printf("A total of %d profiles were loaded successfully\n", numberOfProfiles);
   fclose(fUserTemp);
 
   if (userProfile == 0) { // when called with argument 0 should read all profiles and create struct to house them
