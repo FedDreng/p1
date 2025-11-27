@@ -30,40 +30,31 @@ int main(void) {
   list_windows(path); // Use Windows fallback
 #endif
 
-  Car Car = {.size = {TRUE, FALSE, FALSE},
-             .is_handicapped = FALSE,
-             .wants_uni_close = TRUE,
-             .wants_exit_close = FALSE};
-
-  // Car Car1 = {.size = {TRUE, FALSE, FALSE},
-  //             .is_handicapped = FALSE,
-  //             .wants_uni_close = TRUE,
-  //             .wants_exit_close = FALSE};
+  // static car
+  /*
+  Car userCar = {.size = {TRUE, FALSE, FALSE},
+              .is_handicapped = FALSE,
+              .wants_uni_close = TRUE,
+              .wants_exit_close = FALSE};
+  */
+  Car userCar = {0};
 
   while (!WindowShouldClose()) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    input = GetCarInput(input);
+    userCar = createCarFromInput(userCar);
+
+    if (selectedElement == Assign) {
+      assignCar(&userCar);
+      selectedElement = ChooseLot;
+    }
 
     if (selectedElement == ChooseLot) {
       DrawNav();
-      // Print the selected car size to the console
-      // 1 = small, 2 = medium, 3 = large
-      printf("Size: %d\n", input.car.size);
-
-      // Print whether the car is electric or not
-      // 0 = false, 1 = true
-      printf("Electric: %d\n", input.car.isElectric);
-
-      // Print whether the car is handicapped-accessible
-      // 0 = false, 1 = true
-      printf("Handicap: %d\n", input.car.isHandicap);
 
       showParkingGridRayLib();
 
-      assignCar(&Car);
-      // assignCar(&Car1);
       //  mouseAssigner();
     }
 
@@ -73,6 +64,7 @@ int main(void) {
     }
 
     if (selectedElement == ChooseSpot) {
+      // GUI
     }
 
     EndDrawing();

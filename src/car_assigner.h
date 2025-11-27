@@ -14,5 +14,5 @@ typedef struct {
 void mouseAssigner();
 void assigner(int x, int y);
 void assignCar(Car *car);
-
+Car createCarFromInput(Car current);
 #endif

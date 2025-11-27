@@ -1,8 +1,11 @@
 #include "car_assigner.h"
+#include "Car_Input.h"
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <stdio.h>
 #include <string.h>
+
+CarInputState input = {0};
 
 #define IMPOSSIBLE -1000000
 
@@ -22,20 +25,20 @@ int calculateLotScore(const Car *car, const lot *L) {
 
   // Handicapped car must go to handicapped spot
   if (car->is_handicapped && L->type != handicaped)
-    return IMPOSSIBLE;
+    return -1;
 
   // Non-handicapped car must NOT go to handicapped spot
   if (!car->is_handicapped && L->type == handicaped)
     return IMPOSSIBLE;
 
   int score = 0;
-
+  /*
   if (car->wants_uni_close)
     score -= L->dist_to_university;
 
   if (car->wants_exit_close)
     score -= L->dist_to_exit;
-
+*/
   return score;
 }
 
@@ -96,6 +99,38 @@ void assigner(int x, int y) {
       }
     }
   }
+}
+
+Car createCarFromInput(Car current) {
+  input = GetCarInput(input);
+
+  if (input.car.size == 1) { // small
+    current.size.is_small = true;
+    current.size.is_medium = false;
+    current.size.is_large = false;
+  } else if (input.car.size == 2) { // medium
+    current.size.is_small = false;
+    current.size.is_medium = true;
+    current.size.is_large = false;
+  } else if (input.car.size == 3) { // large
+    current.size.is_small = false;
+    current.size.is_medium = false;
+    current.size.is_large = true;
+  }
+
+  current.is_ev = input.car.isElectric;
+  current.is_handicapped = input.car.isHandicap;
+
+  /*
+  if (IsKeyPressed(KEY_U)) {
+    current.wants_uni_close = !current.wants_uni_close;
+  }
+  if (IsKeyPressed(KEY_X)) { // X for exit
+    current.wants_exit_close = !current.wants_exit_close;
+  }
+  */
+
+  return current;
 }
 
 void mouseAssigner() {

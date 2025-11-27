@@ -40,28 +40,28 @@ CarInputState GetCarInput(CarInputState state) {
     if (GuiButton((Rectangle){50, 150, 200, 50}, "Normal")) {
       state.car.isElectric = false;
       state.car.isHandicap = false;
-      selectedElement = ChooseLot;
+      selectedElement = Assign;
     }
 
     // Electric only
     if (GuiButton((Rectangle){50, 220, 200, 50}, "Elektrisk")) {
       state.car.isElectric = true;
       state.car.isHandicap = false;
-      selectedElement = ChooseLot;
+      selectedElement = Assign;
     }
 
     // Handicap only
     if (GuiButton((Rectangle){50, 290, 200, 50}, "Handicap")) {
       state.car.isElectric = false;
       state.car.isHandicap = true;
-      selectedElement = ChooseLot;
+      selectedElement = Assign;
     }
 
     // Handycap and Electric
     if (GuiButton((Rectangle){50, 360, 200, 50}, "Begge")) {
       state.car.isElectric = true;
       state.car.isHandicap = true;
-      selectedElement = ChooseLot;
+      selectedElement = Assign;
     }
   }
   // Return the updated state so the main program knows what the user selected

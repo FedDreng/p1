@@ -8,7 +8,8 @@ typedef enum {
   ChooseType,
   ChooseBusyness,
   ChooseSpot,
-  ELEMENT_COUNT
+  ELEMENT_COUNT,
+  Assign
 } menuElement;
 
 extern menuElement selectedElement;
