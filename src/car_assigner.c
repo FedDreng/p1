@@ -61,8 +61,11 @@ lot *chooseBestLot(const Car *car) {
 
   return best;
 }
+void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
 void assignCar(Car *car) {
+  strcpy(car->owner.username, "Mikkel");
+  strcpy(car->owner.licensePlate, "AB26654");
   lot *chosen = chooseBestLot(car);
 
   if (chosen == NULL) {
@@ -72,34 +75,26 @@ void assignCar(Car *car) {
 
   chosen->occupied = TRUE;
 
-  printf("Car parked at (%d, %d)\n", chosen->x, chosen->y);
+  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
+         car->owner.licensePlate, car->owner.username, chosen->x, chosen->y);
+  OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,
+               &chosen->y);
   memset(car, 0, sizeof(Car));
   isAssigned = 1;
 }
 
-void assigner(int x, int y) {
-  if (x != -1 && y != -1) {
-    // Check if the mouse click is within the grid bounds
-    if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
+void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
+  char *path = "../assets/parkingLots/occipied.txt";
+  FILE *fptr = fopen(path, "a"); // append mode
 
-      // Get a pointer to the parking lot cell at the clicked location
-      lot *currentLot = &parkingGrid[y][x];
-
-      // Define a car of size small
-      carSize myCar = {true, false, false}; // small car
-
-      // Check if the car can fit in the selected lot
-      if (canFit(myCar, currentLot)) {
-        // Mark the lot as occupied if the car fits
-        currentLot->occupied = TRUE;
-        x = -1;
-        y = -1;
-      } else {
-        // Print a message if the car cannot fit in this lot
-        printf("Car does NOT fit at (%d, %d)\n", x, y);
-      }
-    }
+  if (fptr == NULL) {
+    perror("Error opening file");
+    return;
   }
+
+  fprintf(fptr, "%s,%s,%d,%d\n", username, licensePlate, *posX, *posY);
+
+  fclose(fptr);
 }
 
 Car createCarFromInput(Car current) {
