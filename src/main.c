@@ -22,6 +22,8 @@ int main(void) {
   // busynessCalculator();
   createParkingLotGrid();
 
+  getPreferences(0);
+
   const char *path = "../assets/parkingLots/";
 
 #ifdef __linux__
