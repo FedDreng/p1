@@ -74,6 +74,7 @@ void assignCar(Car *car) {
 
   printf("Car parked at (%d, %d)\n", chosen->x, chosen->y);
   memset(car, 0, sizeof(Car));
+  isAssigned = 1;
 }
 
 void assigner(int x, int y) {

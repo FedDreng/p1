@@ -56,5 +56,6 @@ extern int pee;
 // r r r r r r r
 
 extern lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
+extern int isAssigned;
 
 #endif

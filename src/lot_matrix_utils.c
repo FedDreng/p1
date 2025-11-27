@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
+int isAssigned = 0;
 
 /*
 #ifdef _WIN32
