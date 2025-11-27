@@ -68,7 +68,11 @@ int main(void) {
     }
 
     if (selectedElement == ChooseBusyness) {
+      DrawNav();
       busynessCalculator();
+    }
+
+    if (selectedElement == ChooseSpot) {
     }
 
     EndDrawing();

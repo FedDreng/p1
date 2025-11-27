@@ -7,8 +7,8 @@ Color navColor = (Color){240, 240, 240, 255};
 
 menuElement selectedElement = ChooseSize;
 
-const char *elementNames[ELEMENT_COUNT] = {"Choose Lot", "Choose Size",
-                                           "Choose Type", "BusyNess"};
+const char *elementNames[ELEMENT_COUNT] = {
+    "Choose Lot", "Choose Size", "Choose Type", "BusyNess", "Reserve a spot"};
 
 menuElement navElementAssigner(int index) {
   if (index < 0 || index >= ELEMENT_COUNT)
@@ -22,14 +22,14 @@ void DrawNav() {
   DrawRectangleRec(navbar, navColor);
   DrawRectangleLinesEx(navbar, 1, LIGHTGRAY);
 
-  int elementWidth = 140;
+  int elementWidth = 100;
   int elementGap = 20;
 
   int screenWidth = GetScreenWidth();
   int posX =
       (screenWidth / 2) - ((elementGap + elementWidth) * ELEMENT_COUNT) / 2;
   for (int i = 0; i < ELEMENT_COUNT; i++) {
-    if (GuiButton((Rectangle){posX, 0, elementWidth, 60}, elementNames[i])) {
+    if (GuiButton((Rectangle){posX, 15, elementWidth, 30}, elementNames[i])) {
       selectedElement = navElementAssigner(i); // <--- GLOBAL WRITE
     }
     posX += elementWidth + elementGap;

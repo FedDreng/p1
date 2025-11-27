@@ -7,6 +7,7 @@ typedef enum {
   ChooseSize,
   ChooseType,
   ChooseBusyness,
+  ChooseSpot,
   ELEMENT_COUNT
 } menuElement;
 
