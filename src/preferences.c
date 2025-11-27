@@ -5,7 +5,7 @@
 
 char defaultProfile[20] = ""; // the current default profile, will be read from file when program launches
 int numberOfProfiles = 2; // the number of profiles currently found in file
-char prefFileLocation[] = "..\\assets\\parkingLots\\userPreferences.txt"; // preference file absolute path
+char prefFileLocation[] = "../assets/parkingLots/userPreferences.txt"; // preference file absolute path
 FILE *fUserPref;
 FILE *fUserTemp;
 struct userPref currentUser;
