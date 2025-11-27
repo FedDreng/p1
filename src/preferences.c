@@ -1,7 +1,6 @@
 #include <preferences.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 char defaultProfile[20] = ""; // the current default profile, will be read from file when program launches
 int numberOfProfiles = 2; // the number of profiles currently found in file
@@ -73,13 +72,10 @@ void setPreferences(int userProfile) { // function to alter a specific profile
 
   }
 
-  // for (int i = 0; i <
-  // (sizeof(allUsers[userProfile-1].username)/sizeof(char)); i++) { //this is
-  // to be changed to take a name input and store it as a username for the user
-  // profile
-  //     allUsers[userProfile].username[i-1] = 'a'; //test input, username
-  //     should become "aaaaaaaaaaaaaaaaaaaa"
+  // for (int i = 0; i < (sizeof(allUsers[userProfile-1].username)/sizeof(char)); i++) { //this is to be changed to take a name input and store it as a username for the user profile
+  //     allUsers[userProfile].username[i] = 'a'; //test input, username should become "aaaaaaaaaaaaaaaaaaaa"
   // }
+
   allUsers[userProfile].prefParkingLot = 1; // this is to be changed to take input in the form of preferred parking area, with the given number representing each area of the parking lot or determining which specific parking lot is preferred
 
   fUserPref = fopen(prefFileLocation, "r+");
