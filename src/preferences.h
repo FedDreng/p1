@@ -12,12 +12,9 @@ void savePreferences();
 void setPreferences(int userProfile);
 
 struct userPref {
-  char username[20];
-  char licensePlate[7]; // the user can save their license plate so the app can
-                        // remember for future use
-  int prefParkingLot; // the user can choose which parking lot they prefer to
-                      // park at so the app will weigh that one higher when
-                      // selecting parking spot
+	char username[20];
+	char licensePlate[7]; // the user can save their license plate so the app can remember for future use
+	int prefParkingLot; // the user can choose which parking lot they prefer to park at so the app will weigh that one higher when selecting parking spot
 };
 
 // char defaultProfile[20] = "";
