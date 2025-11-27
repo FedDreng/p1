@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// COMMENTS HER CHRISTIAN :)
 struct Memory {
   char *response;
   size_t size;
@@ -26,6 +27,44 @@ size_t write_callback(void *data, size_t size, size_t nmemb, void *userp) {
   return realsize;
 }
 
+// Extracts the value of a JSON key from a JSON string.
+// NOTE: String-based parser assuming the JSON format is stable.
+
+char *cutUpJson(const char *json, const char *key) {
+  // Temporary buffer to store the extracted value.
+  // Static so value remains valid after the function returns.
+  static char buffer[256];
+
+  // Find the position where the key appears in the JSON string
+  char *pos = strstr(json, key);
+  if (!pos)
+    return NULL; // fandt ikke key
+
+  // Move forward to the ':' after the key
+  pos = strchr(pos, ':');
+  if (!pos)
+    return NULL; // Unexpected format
+  pos++;         // Move past the ':'
+
+  // Skip spaces and opening quote if present
+  while (*pos == ' ' || *pos == '"')
+    pos++;
+
+  // Copy characters until we hit the end of the value
+  // Stop at: '"' (end of string), ',' (next key), or '}' (end of object)
+  int i = 0;
+  while (*pos && *pos != '"' && *pos != ',' && *pos != '}') {
+    buffer[i++] = *pos++;
+  }
+
+  // get rid of the extracted string
+  buffer[i] = '\0';
+
+  // Return the extracted value
+  return buffer;
+}
+
+// SKRIV GERNE COMMENTS HER CHRISTIAN :)
 int licenseplate(void) {
   char plate[64];
   printf("Enter the license plate: ");
@@ -61,7 +100,12 @@ int licenseplate(void) {
   if (res != CURLE_OK) {
     fprintf(stderr, "curl request failed: %s\n", curl_easy_strerror(res));
   } else {
-    printf("Response:\n%s\n", chunk.response);
+    // EKSEMPEL PÅ BRUG AF STRING EXTRACTION --->
+    printf("Make: %s\n", cutUpJson(chunk.response, "make"));
+    printf("Model: %s\n", cutUpJson(chunk.response, "model"));
+    printf("Variant: %s\n", cutUpJson(chunk.response, "variant"));
+
+    // printf("Response:\n%s\n", chunk.response); // prints the hole json output
   }
 
   curl_slist_free_all(headers);
