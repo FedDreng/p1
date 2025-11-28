@@ -8,6 +8,7 @@ typedef enum {
   ChooseType,
   ChooseBusyness,
   ChooseSpot,
+  UserProfiles,
   ELEMENT_COUNT,
   Assign
 } menuElement;

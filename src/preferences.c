@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "raygui.h"
+#include "raylib.h"
+
 char defaultProfile[20] = ""; // the current default profile, will be read from file when program launches
 int numberOfProfiles = 2; // the number of profiles currently found in file
 char prefFileLocation[] = "../assets/userPreferences.txt"; // preference file absolute path
@@ -10,17 +13,18 @@ FILE *fUserTemp;
 struct userPref currentUser;
 struct userPref tempUser;
 
+const char *prefElementNames[TOTAL_ELEMENTS] = {
+  "Create New Profile", "Change Username", "Change License Plate", "Change Handicap Status", "Change EV Status", "Change Location Preference", "Change Isolation Preference"};
+
 void getPreferences(int userProfile) {   // function to read preference profiles from file
   printf("We attempt to read our preference txt file and print the contents\n");
   fUserTemp = fopen(prefFileLocation, "r");
 
-  char tempName[20];
-  char tempPlate[20];
-  int tempNum;
+
   numberOfProfiles = 0;
-  while (fscanf(fUserTemp, "%s %s %d", tempName, tempPlate, &tempNum) == 3) {
+  while (fscanf(fUserTemp, "%s %s %d", tempUser.username, tempUser.licensePlate, &tempUser.prefParkingLot) == 3) {
     numberOfProfiles++;
-    printf("Profile: %d, Username: %s, License Plate: %s, Parking Preference: %d\n", numberOfProfiles, tempName, tempPlate, tempNum);
+    printf("Profile: %d, Username: %s, License Plate: %s, Parking Preference: %d\n", numberOfProfiles, tempUser.username, tempUser.licensePlate, tempUser.prefParkingLot);
   }
   printf("A total of %d profiles were loaded successfully\n", numberOfProfiles);
   fclose(fUserTemp);
@@ -70,6 +74,35 @@ void setPreferences(int userProfile) { // function to alter a specific profile
 
 }
 
-void changeProfileName(int userProfile, char newName[20]) {
+void changePreferences() {
+  DrawText("User Preferences", 300, 80, 20, BLACK);
+  DrawText("Choose what to do:", 300, 120, 18, BLACK);
 
+}
+
+int changePrefGui() {
+  static int prefOption = 0;
+
+  int elementGap = 15;
+  int elementWidth = 200;
+
+  int posX1 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
+  int posX2 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
+  if (GuiButton((Rectangle){40,80,elementWidth,20},prefElementNames[0])) {
+    prefOption = (changeType)0;
+  }
+  for (int n = 1; n < TOTAL_ELEMENTS; n++) {
+    if (n <= 3) {
+      if (GuiButton((Rectangle){posX1,130,elementWidth,20},prefElementNames[n])) {
+        prefOption = (changeType)n;
+      }
+      posX1 += elementWidth + elementGap;
+    } else if (n > 3) {
+      if (GuiButton((Rectangle){posX2,155,elementWidth,20},prefElementNames[n])) {
+        prefOption = (changeType)n;
+      }
+      posX2 += elementWidth + elementGap;
+    }
+  }
+  return prefOption;
 }

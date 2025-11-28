@@ -1,7 +1,3 @@
-//
-// Created by Sullz on 24/11/2025.
-//
-
 #ifndef P1_PREFERENCES_H
 #define P1_PREFERENCES_H
 
@@ -11,6 +7,21 @@
 void getPreferences(int userProfile);
 void savePreferences();
 void setPreferences(int userProfile);
+void changePreferences();
+int changePrefGui();
+
+typedef enum {
+	newProfile,
+	username,
+	licensePlate,
+	handicapped,
+	isEV,
+	prefClose,
+	prefIsolated,
+	TOTAL_ELEMENTS
+} changeType;
+
+extern changeType selectedType;
 
 struct userPref {
 	boolean is_handicapped; // defines whether the license plate is attached to a handicap car or not

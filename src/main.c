@@ -68,6 +68,12 @@ int main(void) {
       // GUI
     }
 
+    if (selectedElement == UserProfiles) {
+      DrawNav();
+      changePreferences();
+      changePrefGui();
+    }
+
     EndDrawing();
   }
 
