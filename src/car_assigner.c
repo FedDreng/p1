@@ -4,11 +4,29 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 CarInputState input = {0};
 
 #define IMPOSSIBLE -1000000
+
+int isIsolated(int x, int y) {
+  // Out of bounds neighbors count as isolated (safe edges)
+  // Left
+  if (x > 0) {
+    lot *L = &parkingGrid[y][x - 1];
+    if (L->type != road && L->type != obstacle && L->occupied)
+      return 0; // not isolated
+  }
+
+  // Right
+  if (x < GRID_WIDTH - 1) {
+    lot *R = &parkingGrid[y][x + 1];
+    if (R->type != road && R->type != obstacle && R->occupied)
+      return 0; // not isolated
+  }
+
+  return 1; // both sides safe
+}
 
 int calculateLotScore(const Car *car, const lot *L) {
   if (L->type == road || L->type == obstacle)
@@ -33,6 +51,21 @@ int calculateLotScore(const Car *car, const lot *L) {
     return IMPOSSIBLE;
 
   int score = 0;
+
+  if (car->want_Isolated) {
+    if (isIsolated(L->x, L->y))
+      score += 500; // strong preference
+  }
+
+  // NOT WORKING YET
+  if (!car->placementPref) { // false == dist_to_university
+    score -= L->dist_to_university;
+  }
+
+  if (car->placementPref) { // true == dist_to_exit
+    score -= L->dist_to_exit;
+  }
+
   /*
   if (car->wants_uni_close)
     score -= L->dist_to_university;
@@ -64,34 +97,22 @@ lot *chooseBestLot(const Car *car) {
 }
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
-void my_strcpy_s(char *dest, const char *src, size_t dest_size) {
-    if (dest_size == 0) return;
-
-    size_t i = 0;
-    while (i < dest_size - 1 && src[i] != '\0') {
-        dest[i] = src[i];
-        i++;
-    }
-
-    dest[i] = '\0';  // always null-terminate
-}
-
-
-
 void assignCar(Car *car) {
   strcpy(car->owner.username, "Mikkel");
   strcpy(car->owner.licensePlate, "AB26654");
   lot *chosen = chooseBestLot(car);
-  //char * username = "Mikkel";
-  //char *license = "AB26654";
+  // char * username = "Mikkel";
+  // char *license = "AB26654";
   if (chosen == NULL) {
     printf("⚠️No suitable parking spot available!\n");
     return;
   }
 
   chosen->occupied = TRUE;
-  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",car->owner.licensePlate,car->owner.username, chosen->x, chosen->y);
-  //OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,&chosen->y);
+  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
+         car->owner.licensePlate, car->owner.username, chosen->x, chosen->y);
+  OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,
+               &chosen->y);
   memset(car, 0, sizeof(Car));
 }
 
@@ -128,6 +149,8 @@ Car createCarFromInput(Car current) {
   current.is_ev = input.car.isElectric;
   current.is_handicapped = input.car.isHandicap;
 
+  // set want isolated
+  current.want_Isolated = TRUE;
   /*
   if (IsKeyPressed(KEY_U)) {
     current.wants_uni_close = !current.wants_uni_close;
