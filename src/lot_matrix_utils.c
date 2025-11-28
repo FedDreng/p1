@@ -5,73 +5,171 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
+#include <string.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 int isAssigned = 0;
 
-/*
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <dirent.h>
-#endif
-
-
-int countFiles(const char *folderPath) {
-    int count = 0;
-
-#ifdef _WIN32
-    WIN32_FIND_DATA data;
-    char searchPath[260];
-    sprintf(searchPath, "%s\\*.*", folderPath);
-
-    HANDLE hFind = FindFirstFile(searchPath, &data);
-    if (hFind == INVALID_HANDLE_VALUE) return -1;
-
-    do {
-        if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-            count++;
-    } while (FindNextFile(hFind, &data));
-
-    FindClose(hFind);
-
-#else
-    DIR *dir = opendir(folderPath);
-    if (dir == NULL) return -1;
-
-    struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_name[0] == '.') continue; // skip . and ..
-        count++;
-    }
-    closedir(dir);
-#endif
-
-    return count;
-}
-
-
-/*
 void readParkingLotFile(char *filename) {
 
-    printf("countfiles: %d\n", countFiles("../assets/parkingLots"));
+    //int countedFiles = countFiles("../assets/parkingLots");
 
-    char buffer[256];
-    FILE *fp = fopen("../assets/parkingLots/parkingGrid.txt", "r");
+  int countedFiles = 0;
+
+  const char *path = "../assets/parkingLots";
+  struct dirent *entry;
+
+  char *files[10]; //current cap of files is 10, increase if needed.
+
+  DIR *dir = opendir(path);
+  if (dir == NULL) {
+    perror("opendir");
+  }
+
+  while ((entry = readdir(dir)) != NULL) {
+    if (strcmp(entry->d_name, ".") == 0 ||
+        strcmp(entry->d_name, "..") == 0) {
+      continue; // skip these
+        }
+
+    printf("%s\n", entry->d_name);
+    files[countedFiles] = strdup(entry->d_name);
+    countedFiles++;
+  }
+  closedir(dir);
+
+
+
+    printf("Chose what parking lot you want to use: \n");
+
+    for (int i = 0; i < countedFiles; i++) {
+      printf("%d, %s \n", i + 1, files[i]);
+    }
+
+    scanf("%d", &countedFiles);
+    countedFiles -= 1;
+
+    //printf("countfiles: %d\n", countedFiles);
+
+    char chosenFileName[256];
+
+    //char chosenFileName[] = "../assets/parkingLots/volBollingTheHomie.txt";
+    printf("fywaaah, %d", countedFiles);
+    sprintf(chosenFileName ,"../assets/parkingLots/%s", files[countedFiles]);
+
+    FILE *fp = fopen(chosenFileName, "r");
 
     if (fp == NULL) {
         printf("retard");
     }
 
+    printf("\n");
+    char buffer[256];
+
     // Read and print each line
     while (fgets(buffer, sizeof(buffer), fp) != NULL) {
         printf("%s", buffer);
+
+        // if (buffer[0] == 'c') {
+        //   printf("among us");
+        // }
+    }
+
+    printf("\n\n");
+
+
+      //første gang laver vi funktionen for at se størrelsen af parking lot
+
+
+      int ch;
+
+      int h = 0, k= 0;
+
+      rewind(fp);
+
+      while ((ch = fgetc(fp)) != EOF) {
+
+        if (ch == '\n') {
+          k++;
+          h = 0;
+        } else if (ch == ' ') {
+          h--;
+        }
+
+        h++;
+
+      }
+  h--;
+
+  printf("x: %d, y: %d ", h, k);
+
+
+    //derefter assigner vi
+
+  ParkingType designLot[h][k];
+
+  //int i = 0;
+  printf("\n\n");
+
+  /*for (int i = 0; i <= k; i++) {
+    //vertical loop
+    for (int y = 0; y < h; y++) {
+      printf("(x row)");
+      if () {
+
+      }
     }
 
     printf("\n");
+  }*/
+
+  rewind(fp);
+  h = 0, k = 0;
+
+
+  printf("\n\n");
+
+  while ((ch = fgetc(fp)) != EOF) {
+
+  //printf("inside loop yo");
+
+    if (ch == ' ') {
+      continue;
+    }
+
+    if (ch == 'r') {
+      printf(" r ");
+      designLot[h][k] = road;
+      printf("ROAD ROAD ROAD ROAD");
+      h++;
+    } else if (ch == '\n') {
+      printf("\n");
+      k++;
+      h = 0;
+    } else if (ch == 'o') {
+      printf(" o ");
+      designLot[h][k] = obstacle;
+      h++;
+    }
+
+    if (ch == '\n') {
+      printf("\n");
+    }
+
+
+    printf(" (h: %d, k: %d) ", h, k);
+  }
+
+
+    //husk, starter fra 0... shiii - VIRKER STADIG IK, BLIR GAL
+
+    printf("\ndesign lot given: %d\n", designLot[1][1]);
+    printf("design lot given: %d\n", designLot[1][3]);
 
 }
-*/
+
+
 void createParkingLotGrid() {
 
   /*printf("How many files do you have?");

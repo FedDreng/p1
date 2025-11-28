@@ -23,7 +23,7 @@ int main(void) {
   // busynessCalculator();
   createParkingLotGrid();
 
-  getPreferences(0);
+  //getPreferences(0);
 
   const char *path = "../assets/parkingLots/";
 
@@ -34,6 +34,7 @@ int main(void) {
 #else
   list_windows(path); // Use Windows fallback
 #endif
+
 
   // static car
   /*
