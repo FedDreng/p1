@@ -23,17 +23,12 @@ int main(void) {
   // busynessCalculator();
   createParkingLotGrid();
 
-  //getPreferences(0);
+  readParkingLotFile();
 
-  const char *path = "../assets/parkingLots/";
+  //getPreferences(0);
 
   licenseplate();
 
-#ifdef __linux__
-  list_linux(path); // Use Linux implementation
-#else
-  list_windows(path); // Use Windows fallback
-#endif
 
 
   // static car

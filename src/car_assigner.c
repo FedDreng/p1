@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 CarInputState input = {0};
 
@@ -63,35 +64,45 @@ lot *chooseBestLot(const Car *car) {
 }
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
+void my_strcpy_s(char *dest, const char *src, size_t dest_size) {
+    if (dest_size == 0) return;
+
+    size_t i = 0;
+    while (i < dest_size - 1 && src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
+
+    dest[i] = '\0';  // always null-terminate
+}
+
+
+
 void assignCar(Car *car) {
   strcpy(car->owner.username, "Mikkel");
   strcpy(car->owner.licensePlate, "AB26654");
   lot *chosen = chooseBestLot(car);
-
+  //char * username = "Mikkel";
+  //char *license = "AB26654";
   if (chosen == NULL) {
     printf("⚠️No suitable parking spot available!\n");
     return;
   }
 
   chosen->occupied = TRUE;
-
-  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
-         car->owner.licensePlate, car->owner.username, chosen->x, chosen->y);
-  OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,
-               &chosen->y);
+  printf("license Plate is  for user: %s.\nThe car is parked af: %d,%d\n\n",car->owner.licensePlate,car->owner.username, chosen->x, chosen->y);
+  //OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,&chosen->y);
   memset(car, 0, sizeof(Car));
-  isAssigned = 1;
 }
 
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
-  char *path = "../assets/parkingLots/occipied.txt";
-  FILE *fptr = fopen(path, "a"); // append mode
+  char *path = "../assets/occipied.txt";
+  FILE *fptr = fopen(path, "w"); // append mode
 
   if (fptr == NULL) {
     perror("Error opening file");
     return;
   }
-
   fprintf(fptr, "%s,%s,%d,%d\n", username, licensePlate, *posX, *posY);
 
   fclose(fptr);

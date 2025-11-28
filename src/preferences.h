@@ -16,7 +16,7 @@ struct userPref {
 	boolean is_handicapped; // defines whether the license plate is attached to a handicap car or not
 	boolean is_ev; // defines whether the license plate is attached to an EV or not
 	char username[20];
-	char licensePlate[7]; // the user can save their license plate so the app can remember for future use
+	char licensePlate[8]; // the user can save their license plate so the app can remember for future use
 	int prefParkingLot; // the user can choose which parking lot they prefer to park at so the app will weigh that one higher when selecting parking spot
 	int prefIsolated; // the user specifies whether they want their parking spot to be isolated, IE with as few cars surrounding it as possible or not
 };
