@@ -90,14 +90,14 @@ void assignCar(Car *car) {
   }
 
   chosen->occupied = TRUE;
-  printf("license Plate is  for user: %s.\nThe car is parked af: %d,%d\n\n",car->owner.licensePlate,car->owner.username, chosen->x, chosen->y);
+  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",car->owner.licensePlate,car->owner.username, chosen->x, chosen->y);
   //OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,&chosen->y);
   memset(car, 0, sizeof(Car));
 }
 
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
   char *path = "../assets/occipied.txt";
-  FILE *fptr = fopen(path, "w"); // append mode
+  FILE *fptr = fopen(path, "a"); // append mode
 
   if (fptr == NULL) {
     perror("Error opening file");
