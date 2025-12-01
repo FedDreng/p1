@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+char *fuel_type = NULL;
+char *car_size = NULL;
+
 // COMMENTS HER CHRISTIAN :)
 struct Memory {
   char *response;
@@ -101,9 +104,14 @@ int licenseplate(void) {
     fprintf(stderr, "curl request failed: %s\n", curl_easy_strerror(res));
   } else {
     // EKSEMPEL PÅ BRUG AF STRING EXTRACTION --->
-    printf("Make: %s\n", cutUpJson(chunk.response, "make"));
-    printf("Model: %s\n", cutUpJson(chunk.response, "model"));
-    printf("Variant: %s\n", cutUpJson(chunk.response, "variant"));
+    // printf("Make: %s\n", cutUpJson(chunk.response, "make"));
+    // printf("Model: %s\n", cutUpJson(chunk.response, "model"));
+    // printf("Variant: %s\n", cutUpJson(chunk.response, "variant"));
+    // printf("Size: %s\n", cutUpJson(chunk.response, "chassis_type"));
+    // printf("Fuel Type: %s\n", cutUpJson(chunk.response, "fuel_type"));
+
+    fuel_type = cutUpJson(chunk.response, "fuel_type");
+    car_size = cutUpJson(chunk.response, "chassis_type");
 
     // printf("Response:\n%s\n", chunk.response); // prints the hole json output
   }

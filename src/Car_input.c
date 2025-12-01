@@ -1,7 +1,9 @@
 #include "Car_Input.h"
+#include "Licenseplate.h"
 #include "navbar.h"
 #include "raygui.h"
 #include "raylib.h"
+#include <string.h>
 // Processes user input through a simple GUI flow.
 // guiStep controls which screen/state is active:
 //
@@ -43,11 +45,13 @@ CarInputState GetCarInput(CarInputState state) {
       selectedElement = Assign;
     }
 
-    // Electric only
-    if (GuiButton((Rectangle){50, 220, 200, 50}, "Elektrisk")) {
-      state.car.isElectric = true;
-      state.car.isHandicap = false;
-      selectedElement = Assign;
+    if (fuel_type && strcasecmp(fuel_type, "El") == 0) {
+      //  Electric only
+      if (GuiButton((Rectangle){50, 220, 200, 50}, "Elektrisk")) {
+        state.car.isElectric = true;
+        state.car.isHandicap = false;
+        selectedElement = Assign;
+      }
     }
 
     // Handicap only

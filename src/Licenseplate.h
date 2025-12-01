@@ -4,4 +4,6 @@
 int licenseplate(void);
 // char *find_value(const char *json, const char *key);
 
+extern char *fuel_type;
+extern char *car_size;
 #endif
