@@ -71,7 +71,6 @@ int main(void) {
     if (selectedElement == UserProfiles) {
       DrawNav();
       changePreferences();
-      changePrefGui();
     }
 
     EndDrawing();
