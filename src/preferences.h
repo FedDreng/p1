@@ -10,6 +10,8 @@ void setPreferences(int userProfile);
 void changePreferences();
 int changePrefGui();
 
+extern int prefOption;
+
 typedef enum {
 	newProfile,
 	username,
@@ -21,14 +23,26 @@ typedef enum {
 	TOTAL_ELEMENTS
 } changeType;
 
+typedef enum {
+	notHandicapped,
+	isHandicapped,
+	HANDIELEMENTS
+} handicappedElement;
+
+typedef enum {
+	yesEV,
+	noEV,
+	EVELEMENTS
+} EVElements;
+
 extern changeType selectedType;
 
 struct userPref {
-	boolean is_handicapped; // defines whether the license plate is attached to a handicap car or not
-	boolean is_ev; // defines whether the license plate is attached to an EV or not
 	char username[20];
 	char licensePlate[8]; // the user can save their license plate so the app can remember for future use
-	int prefParkingLot; // the user can choose which parking lot they prefer to park at so the app will weigh that one higher when selecting parking spot
+	boolean is_handicapped; // defines whether the license plate is attached to a handicap car or not
+	boolean is_ev; // defines whether the license plate is attached to an EV or not
+	int prefClose; // the user can choose which parking lot they prefer to park at so the app will weigh that one higher when selecting parking spot
 	int prefIsolated; // the user specifies whether they want their parking spot to be isolated, IE with as few cars surrounding it as possible or not
 };
 
