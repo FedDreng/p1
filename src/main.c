@@ -65,15 +65,20 @@ int main(void) {
     }
 
     if (selectedElement == ChooseSpot) {
+      DrawNav();
       // GUI
     }
 
     if (selectedElement == UserProfiles) {
-      DrawNav();
+      if (lastElement != selectedElement) {
+        prefOption = -1;
+      }
+      //DrawNav();
       changePreferences();
     }
 
     EndDrawing();
+    lastElement = selectedElement;
   }
 
   CloseWindow();

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "navbar.h"
 #include "raygui.h"
 #include "raylib.h"
@@ -56,7 +55,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
 
 
   numberOfProfiles = 0;
-  while (fscanf(fUserTemp, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+  while (fscanf(fUserTemp, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
     numberOfProfiles++;
     printf("Profile: %d, Username: %s, License Plate: %s, Handicapped and/or EV: %d, %d, Parking Preference: %d, %d\n", numberOfProfiles, tempUser.username, tempUser.licensePlate, tempUser.is_handicapped, tempUser.is_ev, tempUser.prefClose, tempUser.prefIsolated);
   }
@@ -68,7 +67,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
     fUserPref = fopen(prefFileLocation, "r");
     for (int i = 0; i < numberOfProfiles; i++) { // will be changed to only get the data from the profile line that is called as the argument for the function
       printf("Attempting to read profile %d: ", i + 1);
-      if (fscanf(fUserPref, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+      if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
         printf("Profile %d read correctly.\n", i + 1);
       } else {
         printf("Profile %d could not be read.\n", i + 1);
@@ -86,13 +85,13 @@ void getPreferences(int userProfile) {   // function to read preference profiles
     fUserPref = fopen(prefFileLocation, "r");
     for (int i = 1; i <= userProfile; i++) {
       if (i < userProfile) {
-        if (fscanf(fUserPref, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+        if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
           printf("Profile %d read correctly.\n", i);
         } else {
           printf("Could not read profile %d.\n", i);
         }
       } else if (i == userProfile) {
-        if (fscanf(fUserPref, "%s %s %d %d %d %d", currentUser.username, currentUser.licensePlate, &currentUser.is_handicapped, &currentUser.is_ev, &currentUser.prefClose, &currentUser.prefIsolated) == 6) {
+        if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", currentUser.username, currentUser.licensePlate, &currentUser.is_handicapped, &currentUser.is_ev, &currentUser.prefClose, &currentUser.prefIsolated) == 6) {
           printf("Selected profile read correctly.\n");
         } else {
           perror("Could not read specified profile.\n");
@@ -108,7 +107,7 @@ void savePreferences(boolean makeDefault) { // function to save preference profi
   if (makeDefault == 0) {
     fclose(fUserPref);
     fUserPref = fopen(prefFileLocation, "a");
-    fprintf(fUserPref, "\n%s %s %d %d %s %s", tempName, strupr(tempPlate), tempHandi, tempEV, tempClose, tempIso);
+    fprintf(fUserPref, "\n%s , %s , %d , %d , %s , %s", tempName, strupr(tempPlate), tempHandi, tempEV, tempClose, tempIso);
     fclose(fUserPref);
   }
 }

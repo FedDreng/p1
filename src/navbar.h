@@ -14,6 +14,7 @@ typedef enum {
 } menuElement;
 
 extern menuElement selectedElement;
+extern menuElement lastElement;
 
 void DrawNav();
 menuElement navElementAssigner(int index);
