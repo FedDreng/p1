@@ -1,10 +1,22 @@
+#include "navbar.h"
+#include "raygui.h"
+#include "raylib.h"
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define DEBUG
+
 char *fuel_type = NULL;
 char *car_size = NULL;
+
+// Define layout
+const float margin = 20;
+const float boxWidth = 500;
+const float boxHeight = 50;
+
+char *inputLicenseplate();
 
 // COMMENTS HER CHRISTIAN :)
 struct Memory {
@@ -34,45 +46,41 @@ size_t write_callback(void *data, size_t size, size_t nmemb, void *userp) {
 // NOTE: String-based parser assuming the JSON format is stable.
 
 char *cutUpJson(const char *json, const char *key) {
-  // Temporary buffer to store the extracted value.
-  // Static so value remains valid after the function returns.
-  static char buffer[256];
-
-  // Find the position where the key appears in the JSON string
+  char buffer[256];
   char *pos = strstr(json, key);
   if (!pos)
-    return NULL; // fandt ikke key
+    return NULL;
 
-  // Move forward to the ':' after the key
   pos = strchr(pos, ':');
   if (!pos)
-    return NULL; // Unexpected format
-  pos++;         // Move past the ':'
+    return NULL;
+  pos++;
 
-  // Skip spaces and opening quote if present
   while (*pos == ' ' || *pos == '"')
     pos++;
 
-  // Copy characters until we hit the end of the value
-  // Stop at: '"' (end of string), ',' (next key), or '}' (end of object)
   int i = 0;
   while (*pos && *pos != '"' && *pos != ',' && *pos != '}') {
     buffer[i++] = *pos++;
   }
-
-  // get rid of the extracted string
   buffer[i] = '\0';
 
-  // Return the extracted value
-  return buffer;
+  return strdup(buffer); // <-- allocate new memory
 }
 
 // SKRIV GERNE COMMENTS HER CHRISTIAN :)
 int licenseplate(void) {
+  /*
   char plate[64];
-  printf("Enter the license plate: ");
-  if (scanf("%63s", plate) != 1) {
-    fprintf(stderr, "Error reading plate\n");
+  if (scanf("%64s", plate) != 1) {
+    fprintf(stderr, "error reading plate\n");
+    return 1;
+  }
+  */
+  char *plate = "AB26654"; // static licenseplate
+
+  if (plate == NULL) {
+    fprintf(stderr, "error reading plate\n");
     return 1;
   }
 
@@ -91,8 +99,14 @@ int licenseplate(void) {
   chunk.size = 0;
 
   struct curl_slist *headers = NULL;
-  headers = curl_slist_append(headers,
-                              "X-AUTH-TOKEN: e2dgkm06h8lu71nfan1dcwituloghgug");
+#ifdef DEBUG
+  headers = curl_slist_append(headers, "X-AUTH-TOKEN: Here-Should-The-Key-Be");
+#endif
+
+#ifndef DEBUG
+  headers = curl_slist_append(
+      headers, "X-AUTH-TOKEN:  qvlm33g45y7sv9sm3qe7rgp1llkg54gq");
+#endif
 
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -103,17 +117,23 @@ int licenseplate(void) {
   if (res != CURLE_OK) {
     fprintf(stderr, "curl request failed: %s\n", curl_easy_strerror(res));
   } else {
-    // EKSEMPEL PÅ BRUG AF STRING EXTRACTION --->
-    // printf("Make: %s\n", cutUpJson(chunk.response, "make"));
-    // printf("Model: %s\n", cutUpJson(chunk.response, "model"));
-    // printf("Variant: %s\n", cutUpJson(chunk.response, "variant"));
-    // printf("Size: %s\n", cutUpJson(chunk.response, "chassis_type"));
-    // printf("Fuel Type: %s\n", cutUpJson(chunk.response, "fuel_type"));
+#ifdef DEBUG
+    // fuel_type = "El";
+    fuel_type = "Bezin";
+    car_size = "Hatchback";
+
+#endif
+#ifndef DEBUG
+    printf("Size: %s\n", cutUpJson(chunk.response, "chassis_type"));
+    printf("Fuel Type: %s\n", cutUpJson(chunk.response, "fuel_type"));
 
     fuel_type = cutUpJson(chunk.response, "fuel_type");
     car_size = cutUpJson(chunk.response, "chassis_type");
 
     // printf("Response:\n%s\n", chunk.response); // prints the hole json output
+#endif
+    printf("Size: %s\n", car_size);
+    printf("Fuel Type: %s\n", fuel_type);
   }
 
   curl_slist_free_all(headers);
@@ -122,3 +142,30 @@ int licenseplate(void) {
 
   return 0;
 }
+/*
+char *inputLicenseplate() {
+
+  static char textBuffer[16] = {0}; // persistent buffer
+  static Rectangle inputBounds = {20, 150, boxWidth, boxHeight};
+
+  // Draw outer box
+  DrawRectangleRoundedLines(
+      (Rectangle){inputBounds.x - margin / 2, inputBounds.y - margin / 2,
+                  inputBounds.width + margin, inputBounds.height + margin},
+      0.2f, 8, LIGHTGRAY);
+
+  GuiSetStyle(DEFAULT, TEXT_SIZE, 10 + GuiGetFont().baseSize * 2);
+
+  // Textbox
+  GuiTextBox(inputBounds, textBuffer, sizeof(textBuffer), true);
+
+  // Confirm button
+  if (GuiButton((Rectangle){50, 250, 200, 50}, "Add")) {
+    selectedElement = ChooseSize;
+    GuiSetStyle(DEFAULT, TEXT_SIZE, GuiGetFont().baseSize);
+    return textBuffer; // return pointer to the license plate
+  }
+
+  return NULL;
+}
+*/

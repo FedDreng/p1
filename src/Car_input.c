@@ -45,8 +45,8 @@ CarInputState GetCarInput(CarInputState state) {
       selectedElement = Assign;
     }
 
-    if (fuel_type && strcasecmp(fuel_type, "El") == 0) {
-      //  Electric only
+    if (fuel_type && strcasecmp(fuel_type, "El") != 0) {
+      //   Electric only
       if (GuiButton((Rectangle){50, 220, 200, 50}, "Elektrisk")) {
         state.car.isElectric = true;
         state.car.isHandicap = false;
