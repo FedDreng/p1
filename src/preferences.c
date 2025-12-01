@@ -1,6 +1,7 @@
 #include <preferences.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "navbar.h"
 #include "raygui.h"
@@ -22,6 +23,7 @@ boolean tempEV = false;
 char tempClose[2] = "\0";
 char tempIso[2] = "\0";
 int keyPressedPref;
+char* intEnd;
 //int letterCount[6] = {0, 0, 0, 0, 0, 0};
 boolean textBoxEditable[6] = {0, 0, 0, 0, 0, 0};
 
@@ -54,7 +56,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
 
 
   numberOfProfiles = 0;
-  while (fscanf(fUserTemp, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 3) {
+  while (fscanf(fUserTemp, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
     numberOfProfiles++;
     printf("Profile: %d, Username: %s, License Plate: %s, Handicapped and/or EV: %d, %d, Parking Preference: %d, %d\n", numberOfProfiles, tempUser.username, tempUser.licensePlate, tempUser.is_handicapped, tempUser.is_ev, tempUser.prefClose, tempUser.prefIsolated);
   }
@@ -66,40 +68,49 @@ void getPreferences(int userProfile) {   // function to read preference profiles
     fUserPref = fopen(prefFileLocation, "r");
     for (int i = 0; i < numberOfProfiles; i++) { // will be changed to only get the data from the profile line that is called as the argument for the function
       printf("Attempting to read profile %d: ", i + 1);
-      if (fscanf(fUserPref, "%s %s %d", allUsers[i].username, allUsers[i].licensePlate, &allUsers[i].prefClose) == 3) {
+      if (fscanf(fUserPref, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
         printf("Profile %d read correctly.\n", i + 1);
       } else {
         printf("Profile %d could not be read.\n", i + 1);
       }
     }
     fclose(fUserPref);
+    if (strlen(currentUser.username) < 1) {
+      getPreferences(1);
+    }
 
-    savePreferences();
+    //savePreferences(0);
     free(allUsers);
   } else if (userProfile > 0) { // when called with an argument other than 0 should read the specified profile if it exists
     struct userPref *allUsers = calloc(numberOfProfiles, sizeof(struct userPref));
-
-    for (int i = 0; i < userProfile; i++) {
+    fUserPref = fopen(prefFileLocation, "r");
+    for (int i = 1; i <= userProfile; i++) {
       if (i < userProfile) {
-        if (fscanf(fUserPref, "%s %s %d", tempUser.username, tempUser.licensePlate, &tempUser.prefClose) == 3) {
-          printf("Profile %d read correctly.\n", i + 1);
+        if (fscanf(fUserPref, "%s %s %d %d %d %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+          printf("Profile %d read correctly.\n", i);
         } else {
-          printf("Could not read profile %d.\n", i + 1);
+          printf("Could not read profile %d.\n", i);
         }
       } else if (i == userProfile) {
-        if (fscanf(fUserPref, "%s %s %d", currentUser.username, currentUser.licensePlate, &currentUser.prefClose) == 3) {
+        if (fscanf(fUserPref, "%s %s %d %d %d %d", currentUser.username, currentUser.licensePlate, &currentUser.is_handicapped, &currentUser.is_ev, &currentUser.prefClose, &currentUser.prefIsolated) == 6) {
           printf("Selected profile read correctly.\n");
         } else {
           perror("Could not read specified profile.\n");
         }
       }
     }
+    fclose(fUserPref);
     free(allUsers);
   }
 }
 
-void savePreferences() { // function to save preference profiles to file
-
+void savePreferences(boolean makeDefault) { // function to save preference profiles to file
+  if (makeDefault == 0) {
+    fclose(fUserPref);
+    fUserPref = fopen(prefFileLocation, "a");
+    fprintf(fUserPref, "\n%s %s %d %d %s %s", tempName, strupr(tempPlate), tempHandi, tempEV, tempClose, tempIso);
+    fclose(fUserPref);
+  }
 }
 
 void setPreferences(int userProfile) { // function to alter a specific profile
@@ -108,10 +119,10 @@ void setPreferences(int userProfile) { // function to alter a specific profile
 
 void changePreferences() {
   DrawText(TextFormat("User Preferences"/*" Current Option %d"*/, prefOption), 280, 80, 24, BLACK);
+  changePrefGui();
 }
 
 int changePrefGui() {
-  Rectangle textbox = {GetScreenWidth()*1/4,120, 150, 50};
   if (GuiButton((Rectangle){(GetScreenWidth()-80), 70, 60, 20}, "Return")) {
     tempName[0] = '\0';
     tempPlate[0] = '\0';
@@ -121,6 +132,7 @@ int changePrefGui() {
     tempIso[0] = '\0';
     if (prefOption < 0) {
       selectedElement = ChooseLot;
+      prefOption = -1;
       return 0;
     }
     prefOption = -1;
@@ -128,15 +140,19 @@ int changePrefGui() {
 
   switch (prefOption) {
     default:
-    DrawText("Choose what to do:", 300, 100, 20, BLACK);
-    int elementGap = 15;
-    int elementWidth = 200;
+      DrawText("Choose what to do:", 300, 100, 20, BLACK);
+      int elementGap = 15;
+      int elementWidth = 200;
 
-    int posX1 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
-    int posX2 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
-    if (GuiButton((Rectangle){20,80,elementWidth,20},prefElementNames[0])) {
-      prefOption = (changeType)0;
-    }
+      int posX1 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
+      int posX2 = GetScreenWidth() / 2 - (elementGap + elementWidth) * (TOTAL_ELEMENTS-1) / 4;
+      if (GuiButton((Rectangle){20, 70, 150, 20},prefElementNames[0])) {
+        prefOption = (changeType)0;
+      }
+      if (GuiButton((Rectangle){(GetScreenWidth()-250), 70, 150, 20}, "Change Current Profile")) {
+        tempName[0] = '\0';
+        prefOption = 7;
+      }
     for (int n = 1; n < TOTAL_ELEMENTS; n++) {
       if (n <= 3) {
         if (GuiButton((Rectangle){posX1,130,elementWidth,20},prefElementNames[n])) {
@@ -178,7 +194,13 @@ int changePrefGui() {
         textBoxEditable[3] = !textBoxEditable[3];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2-25, 390, 50, 20}, "Confirm")) {
-        savePreferences();
+        savePreferences(0);
+        tempName[0] = '\0';
+        tempPlate[0] = '\0';
+        tempHandi = 0;
+        tempEV = 0;
+        tempClose[0] = '\0';
+        tempIso[0] = '\0';
       }
       break;
     case 1:
@@ -192,6 +214,20 @@ int changePrefGui() {
     case 5:
       break;
     case 6:
+      break;
+    case 7:
+      DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
+      DrawText("Input Profile Number", 300, 200, 20, BLACK);
+      if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempName, 21, textBoxEditable[0])) {
+        textBoxEditable[0] = !textBoxEditable[0];
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        getPreferences(0);
+        if (strtod(tempName, &intEnd) <= numberOfProfiles && tempName[0] != '\0' && strtod(tempName, &intEnd) != 0) {
+          getPreferences(strtod(tempName,&intEnd));
+        }
+        tempName[0] = '\0';
+      }
       break;
   }
   return prefOption;

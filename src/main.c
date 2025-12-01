@@ -25,7 +25,7 @@ int main(void) {
 
   readParkingLotFile();
 
-  //getPreferences(0);
+  getPreferences(0);
 
   licenseplate();
 
@@ -71,7 +71,6 @@ int main(void) {
     if (selectedElement == UserProfiles) {
       DrawNav();
       changePreferences();
-      changePrefGui();
     }
 
     EndDrawing();

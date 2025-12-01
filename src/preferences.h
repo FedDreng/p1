@@ -5,7 +5,7 @@
 #include <parking_lots_matrixs_utils.h>
 
 void getPreferences(int userProfile);
-void savePreferences();
+void savePreferences(boolean makeDefault);
 void setPreferences(int userProfile);
 void changePreferences();
 int changePrefGui();
