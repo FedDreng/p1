@@ -1,3 +1,6 @@
+#include "navbar.h"
+#include "raygui.h"
+#include "raylib.h"
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,6 +8,13 @@
 
 char *fuel_type = NULL;
 char *car_size = NULL;
+
+// Define layout
+const float margin = 20;
+const float boxWidth = 500;
+const float boxHeight = 50;
+
+char *inputLicenseplate();
 
 // COMMENTS HER CHRISTIAN :)
 struct Memory {
@@ -69,10 +79,17 @@ char *cutUpJson(const char *json, const char *key) {
 
 // SKRIV GERNE COMMENTS HER CHRISTIAN :)
 int licenseplate(void) {
+  /*
   char plate[64];
-  printf("Enter the license plate: ");
-  if (scanf("%63s", plate) != 1) {
-    fprintf(stderr, "Error reading plate\n");
+  if (scanf("%64s", plate) != 1) {
+    fprintf(stderr, "error reading plate\n");
+    return 1;
+  }
+  */
+  char *plate = "EM26820";
+
+  if (plate == NULL) {
+    fprintf(stderr, "error reading plate\n");
     return 1;
   }
 
@@ -122,3 +139,30 @@ int licenseplate(void) {
 
   return 0;
 }
+/*
+char *inputLicenseplate() {
+
+  static char textBuffer[16] = {0}; // persistent buffer
+  static Rectangle inputBounds = {20, 150, boxWidth, boxHeight};
+
+  // Draw outer box
+  DrawRectangleRoundedLines(
+      (Rectangle){inputBounds.x - margin / 2, inputBounds.y - margin / 2,
+                  inputBounds.width + margin, inputBounds.height + margin},
+      0.2f, 8, LIGHTGRAY);
+
+  GuiSetStyle(DEFAULT, TEXT_SIZE, 10 + GuiGetFont().baseSize * 2);
+
+  // Textbox
+  GuiTextBox(inputBounds, textBuffer, sizeof(textBuffer), true);
+
+  // Confirm button
+  if (GuiButton((Rectangle){50, 250, 200, 50}, "Add")) {
+    selectedElement = ChooseSize;
+    GuiSetStyle(DEFAULT, TEXT_SIZE, GuiGetFont().baseSize);
+    return textBuffer; // return pointer to the license plate
+  }
+
+  return NULL;
+}
+*/

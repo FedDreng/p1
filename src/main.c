@@ -25,11 +25,8 @@ int main(void) {
 
   readParkingLotFile();
 
-  //getPreferences(0);
-
+  // getPreferences(0);
   licenseplate();
-
-
 
   // static car
   /*
