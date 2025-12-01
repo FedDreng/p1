@@ -1,6 +1,4 @@
 #include "navbar.h"
-#include "raygui.h"
-#include "raylib.h"
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
