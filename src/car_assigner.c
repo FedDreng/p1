@@ -38,23 +38,54 @@ int calculateLotScore(const Car *car, const lot *L) {
   if (!canFit(car->size, (lot *)L))
     return IMPOSSIBLE;
 
-  // EV car must go to EV spot
-  if (car->is_ev && L->type != EV)
-    return IMPOSSIBLE;
-
-  // Handicapped car must go to handicapped spot
-  if (car->is_handicapped && L->type != handicaped)
-    return -1;
-
-  // Non-handicapped car must NOT go to handicapped spot
   if (!car->is_handicapped && L->type == handicaped)
     return IMPOSSIBLE;
 
   int score = 0;
 
+  // EV preference
+  if (car->is_ev) {
+    if (L->type == EV)
+      score += 400;
+    else
+      score += 0;
+  }
+  if (car->is_handicapped) {
+    if (L->type == handicaped)
+      score += 500;
+    else
+      score += 0;
+  }
+
+  // size finder
+  if (car->size.is_large) { // if it is large
+    if (L->lot_size.is_large)
+      score += 300;
+    else if (L->lot_size.is_medium)
+      score += 250;
+    else if (L->lot_size.is_small)
+      score += 200;
+  }
+  if (car->size.is_medium) { // if it is medium
+    if (L->lot_size.is_medium)
+      score += 300;
+    else if (L->lot_size.is_large)
+      score += 250;
+    else if (L->lot_size.is_small)
+      score += 200;
+  }
+  if (car->size.is_small) { // if it is small
+    if (L->lot_size.is_small)
+      score += 300;
+    else if (L->lot_size.is_medium)
+      score += 250;
+    else if (L->lot_size.is_large)
+      score += 200;
+  }
+
   if (car->want_Isolated) {
     if (isIsolated(L->x, L->y))
-      score += 500; // strong preference
+      score += 100;
   }
 
   // NOT WORKING YET
@@ -85,7 +116,13 @@ lot *chooseBestLot(const Car *car) {
 
       lot *L = &parkingGrid[y][x];
       int score = calculateLotScore(car, L);
-
+      // EV preference
+      if (car->is_ev) {
+        if (L->type == EV)
+          score += 1000; // strong preference for EV spot
+        else
+          score += 0; // fallback if no EV spots available
+      }
       if (score > bestScore) {
         bestScore = score;
         best = L;
@@ -101,8 +138,7 @@ void assignCar(Car *car) {
   strcpy(car->owner.username, "Mikkel");
   strcpy(car->owner.licensePlate, "AB26654");
   lot *chosen = chooseBestLot(car);
-  // char * username = "Mikkel";
-  // char *license = "AB26654";
+
   if (chosen == NULL) {
     printf("⚠️No suitable parking spot available!\n");
     return;
