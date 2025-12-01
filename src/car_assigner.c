@@ -88,7 +88,8 @@ int calculateLotScore(const Car *car, const lot *L) {
       score += 100;
   }
 
-  // NOT WORKING YET
+  // Need Place of universety first
+  // Maybe just place uni to always be at the left
   if (!car->placementPref) { // false == dist_to_university
     score -= L->dist_to_university;
   }
@@ -97,13 +98,6 @@ int calculateLotScore(const Car *car, const lot *L) {
     score -= L->dist_to_exit;
   }
 
-  /*
-  if (car->wants_uni_close)
-    score -= L->dist_to_university;
-
-  if (car->wants_exit_close)
-    score -= L->dist_to_exit;
-*/
   return score;
 }
 
@@ -116,13 +110,7 @@ lot *chooseBestLot(const Car *car) {
 
       lot *L = &parkingGrid[y][x];
       int score = calculateLotScore(car, L);
-      // EV preference
-      if (car->is_ev) {
-        if (L->type == EV)
-          score += 1000; // strong preference for EV spot
-        else
-          score += 0; // fallback if no EV spots available
-      }
+
       if (score > bestScore) {
         bestScore = score;
         best = L;
