@@ -1,5 +1,6 @@
 #include "car_assigner.h"
 #include "Car_Input.h"
+#include "Licenseplate.h"
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <stdio.h>
@@ -156,21 +157,22 @@ void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
 Car createCarFromInput(Car current) {
   input = GetCarInput(input);
 
-  if (input.car.size == 1) { // small
+  if (input.car.size == 1 || strcasecmp(car_size, "Hatchback") == 0) { // small
     current.size.is_small = true;
     current.size.is_medium = false;
     current.size.is_large = false;
-  } else if (input.car.size == 2) { // medium
+  } else if (input.car.size == 2 || strcasecmp(car_size, "Sudan") == 0) { // med
     current.size.is_small = false;
     current.size.is_medium = true;
     current.size.is_large = false;
-  } else if (input.car.size == 3) { // large
+  } else if (input.car.size == 3 || strcasecmp(car_size, "SUV") == 0) { // large
     current.size.is_small = false;
     current.size.is_medium = false;
     current.size.is_large = true;
   }
-
-  current.is_ev = input.car.isElectric;
+  if (strcasecmp(fuel_type, "El") != 0) {
+    current.is_ev = input.car.isElectric;
+  }
   current.is_handicapped = input.car.isHandicap;
 
   // set want isolated

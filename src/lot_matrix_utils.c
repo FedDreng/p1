@@ -1,11 +1,12 @@
 //
 // Created by fed on 11/20/25.
 //
+#include "Licenseplate.h"
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
 #include <string.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
@@ -13,14 +14,14 @@ int isAssigned = 0;
 
 void readParkingLotFile(char *filename) {
 
-    //int countedFiles = countFiles("../assets/parkingLots");
+  // int countedFiles = countFiles("../assets/parkingLots");
 
   int countedFiles = 0;
 
   const char *path = "../assets/parkingLots";
   struct dirent *entry;
 
-  char *files[10]; //current cap of files is 10, increase if needed.
+  char *files[10]; // current cap of files is 10, increase if needed.
 
   DIR *dir = opendir(path);
   if (dir == NULL) {
@@ -28,10 +29,9 @@ void readParkingLotFile(char *filename) {
   }
 
   while ((entry = readdir(dir)) != NULL) {
-    if (strcmp(entry->d_name, ".") == 0 ||
-        strcmp(entry->d_name, "..") == 0) {
+    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
       continue; // skip these
-        }
+    }
 
     printf("%s\n", entry->d_name);
     files[countedFiles] = strdup(entry->d_name);
@@ -39,77 +39,71 @@ void readParkingLotFile(char *filename) {
   }
   closedir(dir);
 
+  printf("Chose what parking lot you want to use: \n");
 
+  for (int i = 0; i < countedFiles; i++) {
+    printf("%d, %s \n", i + 1, files[i]);
+  }
 
-    printf("Chose what parking lot you want to use: \n");
+  scanf("%d", &countedFiles);
+  countedFiles -= 1;
 
-    for (int i = 0; i < countedFiles; i++) {
-      printf("%d, %s \n", i + 1, files[i]);
+  // printf("countfiles: %d\n", countedFiles);
+
+  char chosenFileName[256];
+
+  // char chosenFileName[] = "../assets/parkingLots/volBollingTheHomie.txt";
+  printf("fywaaah, %d", countedFiles);
+  sprintf(chosenFileName, "../assets/parkingLots/%s", files[countedFiles]);
+
+  FILE *fp = fopen(chosenFileName, "r");
+
+  if (fp == NULL) {
+    printf("retard");
+  }
+
+  printf("\n");
+  char buffer[256];
+
+  // Read and print each line
+  while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+    printf("%s", buffer);
+
+    // if (buffer[0] == 'c') {
+    //   printf("among us");
+    // }
+  }
+
+  printf("\n\n");
+
+  // første gang laver vi funktionen for at se størrelsen af parking lot
+
+  int ch;
+
+  int h = 0, k = 0;
+
+  rewind(fp);
+
+  while ((ch = fgetc(fp)) != EOF) {
+
+    if (ch == '\n') {
+      k++;
+      h = 0;
+    } else if (ch == ' ') {
+      h--;
     }
 
-    scanf("%d", &countedFiles);
-    countedFiles -= 1;
-
-    //printf("countfiles: %d\n", countedFiles);
-
-    char chosenFileName[256];
-
-    //char chosenFileName[] = "../assets/parkingLots/volBollingTheHomie.txt";
-    printf("fywaaah, %d", countedFiles);
-    sprintf(chosenFileName ,"../assets/parkingLots/%s", files[countedFiles]);
-
-    FILE *fp = fopen(chosenFileName, "r");
-
-    if (fp == NULL) {
-        printf("retard");
-    }
-
-    printf("\n");
-    char buffer[256];
-
-    // Read and print each line
-    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-        printf("%s", buffer);
-
-        // if (buffer[0] == 'c') {
-        //   printf("among us");
-        // }
-    }
-
-    printf("\n\n");
-
-
-      //første gang laver vi funktionen for at se størrelsen af parking lot
-
-
-      int ch;
-
-      int h = 0, k= 0;
-
-      rewind(fp);
-
-      while ((ch = fgetc(fp)) != EOF) {
-
-        if (ch == '\n') {
-          k++;
-          h = 0;
-        } else if (ch == ' ') {
-          h--;
-        }
-
-        h++;
-
-      }
+    h++;
+  }
   h--;
 
   printf("x: %d, y: %d ", h, k);
 
-
-    //derefter assigner vi
+  // derefter assigner vi
 
   ParkingType designLot[h][k];
 
-  //int i = 0;
+  // int i = 0;
   printf("\n\n");
 
   /*for (int i = 0; i <= k; i++) {
@@ -127,12 +121,11 @@ void readParkingLotFile(char *filename) {
   rewind(fp);
   h = 0, k = 0;
 
-
   printf("\n\n");
 
   while ((ch = fgetc(fp)) != EOF) {
 
-  //printf("inside loop yo");
+    // printf("inside loop yo");
 
     if (ch == ' ') {
       continue;
@@ -157,18 +150,14 @@ void readParkingLotFile(char *filename) {
       printf("\n");
     }
 
-
     printf(" (h: %d, k: %d) ", h, k);
   }
 
+  // husk, starter fra 0... shiii - VIRKER STADIG IK, BLIR GAL
 
-    //husk, starter fra 0... shiii - VIRKER STADIG IK, BLIR GAL
-
-    printf("\ndesign lot given: %d\n", designLot[1][1]);
-    printf("design lot given: %d\n", designLot[1][3]);
-
+  printf("\ndesign lot given: %d\n", designLot[1][1]);
+  printf("design lot given: %d\n", designLot[1][3]);
 }
-
 
 void createParkingLotGrid() {
 
@@ -275,7 +264,23 @@ void showParkingGridRayLib() {
   }
 }
 
-//
+/*
+carSize setCarSize() {
+  carSize type;
+
+  if (strcasecmp(car_size, "Hatchback")) {
+    printf("small");
+  }
+  if (strcasecmp(car_size, "Sudan")) {
+    printf("medium");
+  }
+  if (strcasecmp(car_size, "SUV")) {
+    printf("Large");
+  }
+
+  return type;
+}
+*/
 // Function to check if a car can fit in a given parking lot
 boolean canFit(carSize car, lot *currentLot) {
 
