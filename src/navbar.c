@@ -5,7 +5,7 @@
 Rectangle navbar = {0, 0, 800, 60};
 Color navColor = (Color){240, 240, 240, 255};
 
-menuElement selectedElement = ChooseSize;
+menuElement selectedElement = ChooseType;
 
 const char *elementNames[ELEMENT_COUNT] = {"Choose Lot",     "Choose Size",
                                            "Choose Type",    "BusyNess",
