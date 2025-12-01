@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <ctype.h>
+#include <stddef.h>
+
 #include "navbar.h"
 #include "raygui.h"
 #include "raylib.h"
@@ -49,6 +53,19 @@ const char *EVElementNames[EVELEMENTS] = {
   "EV"
 };
 
+// our own strupr() because that funciton is not working on every PC because it
+// is an outdated function
+char *strupr(char *s) {
+  if (!s)
+    return NULL;
+  char *p = s;
+  while (*p) {
+    *p = (char)toupper((unsigned char)*p);
+    p++;
+  }
+  return s;
+}
+
 void getPreferences(int userProfile) {   // function to read preference profiles from file
   printf("We attempt to read our preference txt file and print the contents\n");
   fUserTemp = fopen(prefFileLocation, "r");
@@ -78,7 +95,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
       getPreferences(1);
     }
 
-    //savePreferences(0);
+    // savePreferences(0);
     free(allUsers);
   } else if (userProfile > 0) { // when called with an argument other than 0 should read the specified profile if it exists
     struct userPref *allUsers = calloc(numberOfProfiles, sizeof(struct userPref));

@@ -4,6 +4,16 @@
 #include "raygui.h"
 #include "raylib.h"
 #include <string.h>
+
+typedef enum { TRUE, FALSE } boolean;
+
+boolean is_valid_size(const char *s) {
+  if (!s)
+    return false;
+  return strcasecmp(s, "Hatchback") == 0 || strcasecmp(s, "Sedan") == 0 ||
+         strcasecmp(s, "SUV") == 0;
+}
+
 // Processes user input through a simple GUI flow.
 // guiStep controls which screen/state is active:
 //
@@ -13,11 +23,14 @@
 // The function returns the updated CarInputState after handling button input.
 
 CarInputState GetCarInput(CarInputState state) {
+  // --- Validate car size (Step 0) ---
 
   // STEP 0: Select car size
 
   if (selectedElement == ChooseSize) {
-
+    if (is_valid_size(car_size)) {
+      selectedElement = ChooseType;
+    }
     // Small car option
     if (GuiButton((Rectangle){50, 150, 200, 50}, "Small")) {
       state.car.size = CAR_SMALL;
