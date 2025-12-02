@@ -69,13 +69,7 @@ char *cutUpJson(const char *json, const char *key) {
 
 // SKRIV GERNE COMMENTS HER CHRISTIAN :)
 int licenseplate(void) {
-  /*
-  char plate[64];
-  if (scanf("%64s", plate) != 1) {
-    fprintf(stderr, "error reading plate\n");
-    return 1;
-  }
-  */
+
   char *plate = currentUser.licensePlate;
   // char *plate = "AB26654"; // static licenseplate
 
@@ -143,30 +137,3 @@ int licenseplate(void) {
 
   return 0;
 }
-/*
-char *inputLicenseplate() {
-
-  static char textBuffer[16] = {0}; // persistent buffer
-  static Rectangle inputBounds = {20, 150, boxWidth, boxHeight};
-
-  // Draw outer box
-  DrawRectangleRoundedLines(
-      (Rectangle){inputBounds.x - margin / 2, inputBounds.y - margin / 2,
-                  inputBounds.width + margin, inputBounds.height + margin},
-      0.2f, 8, LIGHTGRAY);
-
-  GuiSetStyle(DEFAULT, TEXT_SIZE, 10 + GuiGetFont().baseSize * 2);
-
-  // Textbox
-  GuiTextBox(inputBounds, textBuffer, sizeof(textBuffer), true);
-
-  // Confirm button
-  if (GuiButton((Rectangle){50, 250, 200, 50}, "Add")) {
-    selectedElement = ChooseSize;
-    GuiSetStyle(DEFAULT, TEXT_SIZE, GuiGetFont().baseSize);
-    return textBuffer; // return pointer to the license plate
-  }
-
-  return NULL;
-}
-*/

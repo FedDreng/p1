@@ -26,7 +26,6 @@ CarInputState GetCarInput(CarInputState state) {
   // --- Validate car size (Step 0) ---
 
   // STEP 0: Select car size
-
   if (selectedElement == ChooseSize) {
     if (is_valid_size(car_size)) {
       selectedElement = ChooseType;
@@ -58,27 +57,27 @@ CarInputState GetCarInput(CarInputState state) {
       selectedElement = Assign;
     }
 
-    if (fuel_type && strcasecmp(fuel_type, "El") != 0) {
-      //   Electric only
-      if (GuiButton((Rectangle){50, 220, 200, 50}, "Elektrisk")) {
-        state.car.isElectric = true;
-        state.car.isHandicap = false;
-        selectedElement = Assign;
-      }
-    }
-
     // Handicap only
-    if (GuiButton((Rectangle){50, 290, 200, 50}, "Handicap")) {
+    if (GuiButton((Rectangle){50, 220, 200, 50}, "Handicap")) {
       state.car.isElectric = false;
       state.car.isHandicap = true;
       selectedElement = Assign;
     }
 
-    // Handycap and Electric
-    if (GuiButton((Rectangle){50, 360, 200, 50}, "Begge")) {
-      state.car.isElectric = true;
-      state.car.isHandicap = true;
-      selectedElement = Assign;
+    //   Electric only
+    if (fuel_type && strcasecmp(fuel_type, "El") != 0) {
+      if (GuiButton((Rectangle){50, 290, 200, 50}, "Elektrisk")) {
+        state.car.isElectric = true;
+        state.car.isHandicap = false;
+        selectedElement = Assign;
+      }
+
+      // Handycap and Electric
+      if (GuiButton((Rectangle){50, 360, 200, 50}, "Both")) {
+        state.car.isElectric = true;
+        state.car.isHandicap = true;
+        selectedElement = Assign;
+      }
     }
   }
   // Return the updated state so the main program knows what the user selected

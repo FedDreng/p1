@@ -15,7 +15,6 @@ typedef struct {
   int x, y;
   char y_axis; // Name for y axis (H3, I3 ...)
   carSize lot_size;
-  // bool is_handicapped;
   ParkingType type;
   boolean isBlinking;
   boolean occupied;

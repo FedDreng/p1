@@ -9,18 +9,30 @@
 
 CarInputState input = {0};
 
+// -- Dont place on spot --
 #define IMPOSSIBLE -1000000
+// -- Around importance --
+#define VERY_IMPORTANT 500
+#define IMPORTANT 400
+// -- sizes --
+#define FIRST_SPOT 300
+#define SECOND_SPOT 250
+#define THIRD_SPOT 200
+// -- Nothing --
+#define NO_SCORE 0
+
+// make preferences be bigger and more comparable sizes
+#define AMPLIFIER 10
 
 int isIsolated(int x, int y) {
-
-  // Left
+  // Check if left side is taken
   if (x > 0) {
     lot *L = &parkingGrid[y][x - 1];
     if (L->type != road && L->type != obstacle && L->occupied)
       return 0; // not isolated
   }
 
-  // Right
+  // Check if right side is taken
   if (x < GRID_WIDTH - 1) {
     lot *R = &parkingGrid[y][x + 1];
     if (R->type != road && R->type != obstacle && R->occupied)
@@ -31,6 +43,7 @@ int isIsolated(int x, int y) {
 }
 
 int calculateLotScore(const Car *car, const lot *L) {
+  // -- Sets spots that is not able to be occipied by this car --
   if (L->type == road || L->type == obstacle)
     return IMPOSSIBLE;
 
@@ -43,51 +56,57 @@ int calculateLotScore(const Car *car, const lot *L) {
   if (!car->is_handicapped && L->type == handicaped)
     return IMPOSSIBLE;
 
+  // Calculate score
   int score = 0;
 
-  // EV preference
+  // Give Electric spot to car
   if (car->is_ev) {
     if (L->type == EV)
-      score += 400;
+      score += VERY_IMPORTANT;
     else
-      score += 0;
+      score += NO_SCORE;
   }
+  // Give handicapped spot to car
   if (car->is_handicapped) {
     if (L->type == handicaped)
-      score += 500;
+      score += IMPORTANT;
     else
-      score += 0;
+      score += NO_SCORE;
   }
 
-  // size finder
-  if (car->size.is_large) { // if it is large
+  // -- size finder --
+  // if it is large
+  if (car->size.is_large) {
     if (L->lot_size.is_large)
-      score += 300;
+      score += FIRST_SPOT;
     else if (L->lot_size.is_medium)
-      score += 250;
+      score += SECOND_SPOT;
     else if (L->lot_size.is_small)
-      score += 200;
+      score += THIRD_SPOT;
   }
-  if (car->size.is_medium) { // if it is medium
+  // if it is medium
+  if (car->size.is_medium) {
     if (L->lot_size.is_medium)
-      score += 300;
+      score += FIRST_SPOT;
     else if (L->lot_size.is_large)
-      score += 250;
+      score += SECOND_SPOT;
     else if (L->lot_size.is_small)
-      score += 200;
+      score += THIRD_SPOT;
   }
-  if (car->size.is_small) { // if it is small
+  // if it is small
+  if (car->size.is_small) {
     if (L->lot_size.is_small)
-      score += 300;
+      score += FIRST_SPOT;
     else if (L->lot_size.is_medium)
-      score += 250;
+      score += SECOND_SPOT;
     else if (L->lot_size.is_large)
-      score += 200;
+      score += THIRD_SPOT;
   }
 
+  // Give spot to car if its isolated for other cars
   if (car->want_Isolated) {
     if (isIsolated(L->x, L->y))
-      score += (currentUser.prefIsolated * 10);
+      score += (currentUser.prefIsolated * AMPLIFIER);
   }
 
   // Need Place of universety first
@@ -103,16 +122,26 @@ int calculateLotScore(const Car *car, const lot *L) {
   return score;
 }
 
+// Using the calculated score to find the best parking spot
 lot *chooseBestLot(const Car *car) {
+  // Pointer to the currently best parking lot found; NULL means none yet
   lot *best = NULL;
+
+  // Initialize best score to the lowest possible value so any valid score is
+  // higher
   int bestScore = IMPOSSIBLE;
 
+  // Loop through every row and column in the parking grid
   for (int y = 0; y < GRID_HEIGHT; y++) {
     for (int x = 0; x < GRID_WIDTH; x++) {
 
+      // Get a pointer to the current lot at the axises
       lot *L = &parkingGrid[y][x];
+
+      // Calculate how good this spot is for the given car
       int score = calculateLotScore(car, L);
 
+      // If this spot is better than the best one so far, update our choice
       if (score > bestScore) {
         bestScore = score;
         best = L;
@@ -120,13 +149,13 @@ lot *chooseBestLot(const Car *car) {
     }
   }
 
+  // Return the best matching lot, or NULL if none were suitable
   return best;
 }
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
 void assignCar(Car *car) {
-  // strcpy(car->Pref.username, "Mikkel");
-  // strcpy(car->Pref.licensePlate, "AB26654");
+
   // Reset blinking for all spots first
   for (int y = 0; y < GRID_HEIGHT; y++) {
     for (int x = 0; x < GRID_WIDTH; x++) {
@@ -137,51 +166,63 @@ void assignCar(Car *car) {
   lot *chosen = chooseBestLot(car);
 
   if (chosen == NULL) {
+    // SHOULD DRAW ON THE WINDOW INSTEAD
     printf("⚠️No suitable parking spot available!\n");
     return;
   }
 
+  // if spot is found the set it as occupied, and current spot to blink
   chosen->occupied = TRUE;
   chosen->isBlinking = TRUE;
-  printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
-         car->Pref.licensePlate, car->Pref.username, chosen->x, chosen->y);
+
+  //  Sends to file
   OccipiedSpot(car->Pref.username, car->Pref.licensePlate, &chosen->x,
                &chosen->y);
   memset(car, 0, sizeof(Car));
 }
 
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
+  // find occipied.txt
   char *path = "../assets/occipied.txt";
   FILE *fptr = fopen(path, "a"); // append mode
 
+  // validate
   if (fptr == NULL) {
     perror("Error opening file");
     return;
   }
+  // Insert input into txt file
   fprintf(fptr, "%s,%s,%d,%d\n", username, licensePlate, *posX, *posY);
 
   fclose(fptr);
 }
 
 Car createCarFromInput(Car current) {
+  // get input from Car_input
   input = GetCarInput(input);
 
+  // check input from user or from licensePlate
   if (input.car.size == 1 || strcasecmp(car_size, "Hatchback") == 0) { // small
+    // Set as {TRUE,FALSE,FALSE}
     current.size.is_small = true;
     current.size.is_medium = false;
     current.size.is_large = false;
   } else if (input.car.size == 2 || strcasecmp(car_size, "Sudan") == 0) { // med
+    // Set as {FALSE,TRUE,FALSE}
     current.size.is_small = false;
     current.size.is_medium = true;
     current.size.is_large = false;
   } else if (input.car.size == 3 || strcasecmp(car_size, "SUV") == 0) { // large
+    // Set as {FALSE,FALSE,TRUE}
     current.size.is_small = false;
     current.size.is_medium = false;
     current.size.is_large = true;
   }
+  // If cartype is not defined by licensePlate take user input
   if (strcasecmp(fuel_type, "El") != 0) {
     current.is_ev = input.car.isElectric;
   }
+  // Get handicapped from user
   current.is_handicapped = input.car.isHandicap;
 
   // Set preferences

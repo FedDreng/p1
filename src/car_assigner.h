@@ -4,11 +4,9 @@
 #include "preferences.h"
 // car builder
 typedef struct {
-  carSize size;  // small / medium / large
-  boolean is_ev; // needs EV charger
+  carSize size; // small / medium / large
+  boolean is_ev;
   boolean is_handicapped;
-  // boolean wants_uni_close;
-  // boolean wants_exit_close;
   boolean placementPref;
   boolean want_Isolated;
   struct userPref Pref;

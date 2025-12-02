@@ -1,5 +1,4 @@
 #define RAYGUI_IMPLEMENTATION
-#include "Car_Input.h"
 #include "Licenseplate.h"
 #include "busyness_prediction.h"
 #include "car_assigner.h"
@@ -15,11 +14,8 @@
 int main(void) {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
 
-  CarInputState input = {0};
-  // readParkingLotFile();
-
   SetTargetFPS(60);
-  // busynessCalculator();
+
   createParkingLotGrid();
 
   readParkingLotFile();
@@ -28,9 +24,8 @@ int main(void) {
 
   licenseplate();
 
-  // static car
-  /*
-  Car userCar = {.size = {TRUE, FALSE, FALSE},
+  /* static car
+   Car userCar = {.size = {TRUE, FALSE, FALSE},
               .is_handicapped = FALSE,
               .wants_uni_close = TRUE,
               .wants_exit_close = FALSE};
@@ -50,20 +45,12 @@ int main(void) {
 
     if (selectedElement == ChooseLot) {
       DrawNav();
-
       showParkingGridRayLib();
-
-      //  mouseAssigner();
     }
 
     if (selectedElement == ChooseBusyness) {
       DrawNav();
       busynessCalculator();
-    }
-
-    if (selectedElement == ChooseSpot) {
-      DrawNav();
-      // GUI
     }
 
     if (selectedElement == UserProfiles) {
@@ -81,5 +68,3 @@ int main(void) {
   CloseWindow();
   return 0;
 }
-
-// printf("%d\n%d\n%d\n\n", car.size, car.isElectric, car.isHandicap);
