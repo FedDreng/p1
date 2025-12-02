@@ -3,7 +3,6 @@
 #include "Licenseplate.h"
 #include "busyness_prediction.h"
 #include "car_assigner.h"
-#include "filecheck.h"
 #include "navbar.h"
 #include "parking_lots_matrixs_utils.h"
 #include "preferences.h"
@@ -28,8 +27,6 @@ int main(void) {
   getPreferences(0);
 
   licenseplate();
-
-
 
   // static car
   /*
@@ -73,7 +70,7 @@ int main(void) {
       if (lastElement != selectedElement) {
         prefOption = -1;
       }
-      //DrawNav();
+      // DrawNav();
       changePreferences();
     }
 

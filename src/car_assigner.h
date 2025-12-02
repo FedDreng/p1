@@ -7,11 +7,11 @@ typedef struct {
   carSize size;  // small / medium / large
   boolean is_ev; // needs EV charger
   boolean is_handicapped;
-  // boolean wants_uni_close;  // preference example
-  // boolean wants_exit_close; // another preference
+  // boolean wants_uni_close;
+  // boolean wants_exit_close;
   boolean placementPref;
   boolean want_Isolated;
-  struct userPref owner;
+  struct userPref Pref;
 } Car;
 
 void mouseAssigner();
