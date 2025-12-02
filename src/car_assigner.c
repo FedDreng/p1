@@ -2,6 +2,7 @@
 #include "Car_Input.h"
 #include "Licenseplate.h"
 #include "parking_lots_matrixs_utils.h"
+#include "preferences.h"
 #include "raylib.h"
 #include <stdio.h>
 #include <string.h>
@@ -124,8 +125,8 @@ lot *chooseBestLot(const Car *car) {
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
 void assignCar(Car *car) {
-  strcpy(car->owner.username, "Mikkel");
-  strcpy(car->owner.licensePlate, "AB26654");
+  // strcpy(car->Pref.username, "Mikkel");
+  // strcpy(car->Pref.licensePlate, "AB26654");
   lot *chosen = chooseBestLot(car);
 
   if (chosen == NULL) {
@@ -135,8 +136,8 @@ void assignCar(Car *car) {
 
   chosen->occupied = TRUE;
   printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
-         car->owner.licensePlate, car->owner.username, chosen->x, chosen->y);
-  OccipiedSpot(car->owner.username, car->owner.licensePlate, &chosen->x,
+         car->Pref.licensePlate, car->Pref.username, chosen->x, chosen->y);
+  OccipiedSpot(car->Pref.username, car->Pref.licensePlate, &chosen->x,
                &chosen->y);
   memset(car, 0, sizeof(Car));
 }
@@ -175,8 +176,15 @@ Car createCarFromInput(Car current) {
   }
   current.is_handicapped = input.car.isHandicap;
 
+  // Set preferences
+  strncpy(current.Pref.licensePlate, currentUser.licensePlate,
+          sizeof(current.Pref.licensePlate));
+
+  strncpy(current.Pref.username, currentUser.username,
+          sizeof(current.Pref.username));
+
   // set want isolated
-  current.want_Isolated = TRUE;
+  current.want_Isolated = currentUser.prefIsolated;
   /*
   if (IsKeyPressed(KEY_U)) {
     current.wants_uni_close = !current.wants_uni_close;
