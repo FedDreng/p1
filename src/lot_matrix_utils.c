@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 int isAssigned = 0;
@@ -271,27 +272,30 @@ void showParkingGridRayLib() {
   int gridHeight = GRID_HEIGHT * CELL_SIZE;
 
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
-  int offsetY = ((GetScreenHeight() - gridHeight) / 2) +
-                60 / 2; // offset Y + the height of the navbar 60 / 2
+  int offsetY = ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
 
-  // Draw parking grid manually (so we can add occupied colors)
+  // Draw parking grid manually (so we can add occupied colors and blinking)
   for (int y = 0; y < GRID_HEIGHT; y++) {
     for (int x = 0; x < GRID_WIDTH; x++) {
-
-      // set the current lot to be the same as the grid we work with right now
       lot *currentLot = &parkingGrid[y][x];
-
-      // creating the Rectangle for the spot / Cell
       Rectangle rect = {offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE,
                         CELL_SIZE, CELL_SIZE};
 
-      // check if the parking lot is occupied
-      if (currentLot->occupied)
-        DrawRectangleRec(rect, DARKGRAY);
-      else
-        // print the color for the specific identifier
-        DrawRectangleRec(rect, getParkingColor(currentLot->type));
-      // set the border to black
+      Color color;
+
+      if (currentLot->isBlinking) {
+        // Blink yellow every 0.5 seconds
+        if (fmod(GetTime() * 2.0, 2.0) < 1.0)
+          color = YELLOW;
+        else
+          color = getParkingColor(currentLot->type);
+      } else if (currentLot->occupied) {
+        color = DARKGRAY;
+      } else {
+        color = getParkingColor(currentLot->type);
+      }
+
+      DrawRectangleRec(rect, color);
       DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
     }
   }
