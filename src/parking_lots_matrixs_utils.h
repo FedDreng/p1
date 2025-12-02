@@ -17,7 +17,7 @@ typedef struct {
   carSize lot_size;
   // bool is_handicapped;
   ParkingType type;
-
+  boolean isBlinking;
   boolean occupied;
   carSize allowed;
 

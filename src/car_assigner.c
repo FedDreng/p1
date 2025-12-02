@@ -127,6 +127,12 @@ void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 void assignCar(Car *car) {
   // strcpy(car->Pref.username, "Mikkel");
   // strcpy(car->Pref.licensePlate, "AB26654");
+  // Reset blinking for all spots first
+  for (int y = 0; y < GRID_HEIGHT; y++) {
+    for (int x = 0; x < GRID_WIDTH; x++) {
+      parkingGrid[y][x].isBlinking = FALSE;
+    }
+  }
 
   lot *chosen = chooseBestLot(car);
 
@@ -136,6 +142,7 @@ void assignCar(Car *car) {
   }
 
   chosen->occupied = TRUE;
+  chosen->isBlinking = TRUE;
   printf("license Plate is %s for user: %s.\nThe car is parked af: %d,%d\n\n",
          car->Pref.licensePlate, car->Pref.username, chosen->x, chosen->y);
   OccipiedSpot(car->Pref.username, car->Pref.licensePlate, &chosen->x,

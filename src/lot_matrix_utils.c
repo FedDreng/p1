@@ -5,10 +5,10 @@
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <dirent.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 int isAssigned = 0;
@@ -272,7 +272,8 @@ void showParkingGridRayLib() {
   int gridHeight = GRID_HEIGHT * CELL_SIZE;
 
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
-  int offsetY = ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
+  int offsetY =
+      ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
 
   // Draw parking grid manually (so we can add occupied colors and blinking)
   for (int y = 0; y < GRID_HEIGHT; y++) {
