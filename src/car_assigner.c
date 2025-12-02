@@ -12,7 +12,7 @@ CarInputState input = {0};
 #define IMPOSSIBLE -1000000
 
 int isIsolated(int x, int y) {
-  // Out of bounds neighbors count as isolated (safe edges)
+
   // Left
   if (x > 0) {
     lot *L = &parkingGrid[y][x - 1];
@@ -87,7 +87,7 @@ int calculateLotScore(const Car *car, const lot *L) {
 
   if (car->want_Isolated) {
     if (isIsolated(L->x, L->y))
-      score += 100;
+      score += (currentUser.prefIsolated * 10);
   }
 
   // Need Place of universety first
@@ -185,15 +185,9 @@ Car createCarFromInput(Car current) {
           sizeof(current.Pref.username));
 
   // set want isolated
-  current.want_Isolated = currentUser.prefIsolated;
-  /*
-  if (IsKeyPressed(KEY_U)) {
-    current.wants_uni_close = !current.wants_uni_close;
+  if (0 < currentUser.prefIsolated) {
+    current.want_Isolated = TRUE;
   }
-  if (IsKeyPressed(KEY_X)) { // X for exit
-    current.wants_exit_close = !current.wants_exit_close;
-  }
-  */
 
   return current;
 }

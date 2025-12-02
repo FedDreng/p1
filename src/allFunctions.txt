@@ -72,6 +72,8 @@ function showParkingGridRayLib
 
 function canFit (car, currentLot)
 
+function loadOccipied
+
 
 
 ========== main.c ==========
