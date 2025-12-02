@@ -1,0 +1,109 @@
+========== busyness_prediction.c ==========
+
+function printBusyness (chosenInput, schedule, step)
+
+function getDayGui (step)
+function getHourGui (step)
+
+function busynessCalculator
+
+struct busynessSchedule
+
+function userInput (step)
+
+function getDay (day)
+
+
+
+========== car_assigner.c ==========
+
+function isIsolated (x, y)
+
+function calculatedLotScore (Car, lot)
+
+function chooseBestLot (Car)
+
+function OccipiedSpot (username, licensePlate, posX, posY)
+
+function assignCar (Car)
+
+function createCarFromInput (current)
+
+function mouseAssigner
+
+
+
+========== Car_input.c ==========
+
+function is_valid_size (s)
+
+function GetCarInput (state)
+
+
+
+========== Car_Types.h ==========
+
+function ResetCar (car)
+
+function PrintCarInfo (car)
+
+
+
+========== Licenseplate.c ==========
+
+function write_callback (data, size, nmemb, userp)
+
+function cutUpJson (json, key)
+
+function licenseplate
+
+
+
+
+========== lot_matrix_utils.c ==========
+
+function readParkingLotFile (filename)
+
+function createParkingLotGrid
+
+function getParkingColor (t)
+
+function showParkingGridRayLib
+
+function canFit (car, currentLot)
+
+
+
+========== main.c ==========
+
+function main
+
+
+
+========== navbar.c ==========
+
+function navElementAssigner (index)
+
+function DrawNav
+
+
+
+========== preferences.c ==========
+
+function strupr (s)
+
+function getPreference (userProfile)
+
+function savePreference (makeDefault)
+
+function setPreference (userProfile)
+
+function changePreference
+
+function changePrefGui
+
+
+
+========== spot_assign.c ==========
+
+function spot_assign
