@@ -1,4 +1,5 @@
 #include "navbar.h"
+#include "preferences.h"
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,7 +76,8 @@ int licenseplate(void) {
     return 1;
   }
   */
-  char *plate = "AB26654"; // static licenseplate
+  char *plate = currentUser.licensePlate;
+  // char *plate = "AB26654"; // static licenseplate
 
   if (plate == NULL) {
     fprintf(stderr, "error reading plate\n");
@@ -117,8 +119,8 @@ int licenseplate(void) {
   } else {
 #ifdef DEBUG
     // fuel_type = "El";
-    fuel_type = "Bezin";
-    car_size = " ";
+    fuel_type = "El";
+    car_size = "Hatchback";
 
 #endif
 #ifndef DEBUG
@@ -132,6 +134,7 @@ int licenseplate(void) {
 #endif
     printf("Size: %s\n", car_size);
     printf("Fuel Type: %s\n", fuel_type);
+    printf("plate: %s\n", plate);
   }
 
   curl_slist_free_all(headers);

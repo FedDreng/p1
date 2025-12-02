@@ -23,7 +23,7 @@ int main(void) {
   createParkingLotGrid();
 
   readParkingLotFile();
-
+  loadOccipied();
   getPreferences(0);
 
   licenseplate();
