@@ -67,38 +67,33 @@ char *strupr(char *s) {
 }
 
 void getPreferences(int userProfile) {   // function to read preference profiles from file
-  printf("We attempt to read our preference txt file and print the contents\n");
-  fUserTemp = fopen(prefFileLocation, "r");
-
-
-  numberOfProfiles = 0;
-  while (fscanf(fUserTemp, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
-    numberOfProfiles++;
-    printf("Profile: %d, Username: %s, License Plate: %s, Handicapped and/or EV: %d, %d, Parking Preference: %d, %d\n", numberOfProfiles, tempUser.username, tempUser.licensePlate, tempUser.is_handicapped, tempUser.is_ev, tempUser.prefClose, tempUser.prefIsolated);
-  }
-  printf("A total of %d profiles were loaded successfully\n", numberOfProfiles);
-  fclose(fUserTemp);
-
   if (userProfile == 0) { // when called with argument 0 should read all profiles and create struct to house them
-    struct userPref *allUsers = calloc(numberOfProfiles, sizeof(struct userPref));
-    fUserPref = fopen(prefFileLocation, "r");
-    for (int i = 0; i < numberOfProfiles; i++) { // will be changed to only get the data from the profile line that is called as the argument for the function
-      printf("Attempting to read profile %d: ", i + 1);
-      if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
-        printf("Profile %d read correctly.\n", i + 1);
-      } else {
-        printf("Profile %d could not be read.\n", i + 1);
-      }
+    printf("We attempt to read our preference txt file and print the contents\n");
+    fUserTemp = fopen(prefFileLocation, "r");
+    numberOfProfiles = 0;
+    while (fscanf(fUserTemp, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+      numberOfProfiles++;
+      printf("Profile: %d, Username: %s, License Plate: %s, Handicapped and/or EV: %d, %d, Parking Preference: %d, %d\n", numberOfProfiles, tempUser.username, tempUser.licensePlate, tempUser.is_handicapped, tempUser.is_ev, tempUser.prefClose, tempUser.prefIsolated);
     }
-    fclose(fUserPref);
+    printf("A total of %d profiles were loaded successfully\n", numberOfProfiles);
+    fclose(fUserTemp);
+
+    // fUserPref = fopen(prefFileLocation, "r");
+    // for (int i = 0; i < numberOfProfiles; i++) { // will be changed to only get the data from the profile line that is called as the argument for the function
+    //   printf("Attempting to read profile %d: ", i + 1);
+    //   if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", tempUser.username, tempUser.licensePlate, &tempUser.is_handicapped, &tempUser.is_ev, &tempUser.prefClose, &tempUser.prefIsolated) == 6) {
+    //     printf("Profile %d read correctly.\n", i + 1);
+    //   } else {
+    //     printf("Profile %d could not be read.\n", i + 1);
+    //   }
+    // }
+    //fclose(fUserPref);
+
     if (strlen(currentUser.username) < 1) {
       getPreferences(1);
     }
 
-    // savePreferences(0);
-    free(allUsers);
   } else if (userProfile > 0) { // when called with an argument other than 0 should read the specified profile if it exists
-    struct userPref *allUsers = calloc(numberOfProfiles, sizeof(struct userPref));
     fUserPref = fopen(prefFileLocation, "r");
     for (int i = 1; i <= userProfile; i++) {
       if (i < userProfile) {
@@ -116,7 +111,6 @@ void getPreferences(int userProfile) {   // function to read preference profiles
       }
     }
     fclose(fUserPref);
-    free(allUsers);
   }
 }
 
@@ -126,6 +120,46 @@ void savePreferences(boolean makeDefault) { // function to save preference profi
     fUserPref = fopen(prefFileLocation, "a");
     fprintf(fUserPref, "\n%s , %s , %d , %d , %s , %s", tempName, strupr(tempPlate), tempHandi, tempEV, tempClose, tempIso);
     fclose(fUserPref);
+  } else if (makeDefault == 1) {
+    fclose(fUserPref);
+
+    struct userPref *allUsers = calloc(numberOfProfiles+1, sizeof(struct userPref));
+    for (int h = 0; h <= strlen(tempName); h++) {
+      if (h == strlen(tempName)) {
+        allUsers[0].username[h] = '\0';
+      } else {
+        allUsers[0].username[h] = tempName[h];
+      }
+    }
+    for (int h = 0; h <= strlen(tempPlate); h++) {
+      if (h == strlen(tempPlate)) {
+        allUsers[0].licensePlate[h] = '\0';
+      } else {
+        allUsers[0].licensePlate[h] = tempPlate[h];
+      }
+    }
+    allUsers[0].is_handicapped = tempHandi;
+    allUsers[0].is_ev = tempEV;
+    allUsers[0].prefClose = strtod(tempClose, &intEnd);
+    allUsers[0].prefIsolated = strtod(tempIso, &intEnd);
+    fUserPref = fopen(prefFileLocation, "r");
+    for (int i = 1; i <= numberOfProfiles; i++) {
+      if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", allUsers[i].username, strupr(allUsers[i].licensePlate), &allUsers[i].is_handicapped, &allUsers[i].is_ev, &allUsers[i].prefClose, &allUsers[i].prefIsolated) == 6) {
+        printf("Profile %d read to struct\n", i);
+      }
+    }
+    fclose(fUserPref);
+    fUserPref = fopen(prefFileLocation, "w");
+    for (int j = 0; j < numberOfProfiles+1; j++) {
+      printf("Profile %d: %s, %s, %d, %d, %d, %d", j+1, allUsers[j].username, strupr(allUsers[j].licensePlate), allUsers[j].is_handicapped, allUsers[j].is_ev, allUsers[j].prefClose, allUsers[j].prefIsolated);
+      if (j == 0) {
+        fprintf(fUserPref, "%s , %s , %d , %d , %d , %d", allUsers[j].username, strupr(allUsers[j].licensePlate), allUsers[j].is_handicapped, allUsers[j].is_ev, allUsers[j].prefClose, allUsers[j].prefIsolated);
+      } else {
+        fprintf(fUserPref, "\n%s , %s , %d , %d , %d , %d", allUsers[j].username, strupr(allUsers[j].licensePlate), allUsers[j].is_handicapped, allUsers[j].is_ev, allUsers[j].prefClose, allUsers[j].prefIsolated);
+      }
+    }
+    fclose(fUserPref);
+    free(allUsers);
   }
 }
 
@@ -209,7 +243,16 @@ int changePrefGui() {
       if (GuiTextBox((Rectangle){boxX2, 320, 400, 30}, tempIso, 2, textBoxEditable[3])) {
         textBoxEditable[3] = !textBoxEditable[3];
       }
-      if (GuiButton((Rectangle){GetScreenWidth()/2-25, 390, 50, 20}, "Confirm")) {
+      if (GuiButton((Rectangle){GetScreenWidth()/2-120, 400, 90, 20}, "Make Default")) {
+        savePreferences(1);
+        tempName[0] = '\0';
+        tempPlate[0] = '\0';
+        tempHandi = 0;
+        tempEV = 0;
+        tempClose[0] = '\0';
+        tempIso[0] = '\0';
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2-25, 400, 50, 20}, "Confirm")) {
         savePreferences(0);
         tempName[0] = '\0';
         tempPlate[0] = '\0';
