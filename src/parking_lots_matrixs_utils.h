@@ -1,6 +1,5 @@
 #ifndef PARKING_H
 #define PARKING_H
-
 typedef enum { FALSE, TRUE } boolean;
 
 typedef enum { handicaped, road, EV, parking_bay, obstacle } ParkingType;
@@ -22,10 +21,20 @@ typedef struct {
   boolean occupied;
   carSize allowed;
 
-  // NEW FIELDS FOR PREFERENCES
   int dist_to_university;
   int dist_to_exit;
+
+  char username[20];
+  char licensePlate[8];
+
 } lot;
+
+typedef struct {
+  char username[50];
+  char license[20];
+  int posX;
+  int posY;
+} Occipied;
 
 typedef struct Color Color;
 

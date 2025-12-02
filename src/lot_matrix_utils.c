@@ -214,6 +214,39 @@ void createParkingLotGrid() {
   }
 }
 
+void loadOccipied() {
+  FILE *PloadOccipied = fopen("../assets/occipied.txt", "r");
+  if (!PloadOccipied) {
+    perror("Failed to open file");
+    return;
+  }
+
+  char line[256];
+  Occipied record;
+
+  while (fgets(line, sizeof(line), PloadOccipied)) {
+
+    if (sscanf(line, "%49[^,],%19[^,],%d,%d", record.username, record.license,
+               &record.posX, &record.posY) == 4) {
+
+      // Mark grid cell as occupied
+      parkingGrid[record.posY][record.posX].occupied = TRUE;
+
+      // Optional: store owner info
+      strcpy(parkingGrid[record.posY][record.posX].username, record.username);
+      strcpy(parkingGrid[record.posY][record.posX].licensePlate,
+             record.license);
+
+      // printf("Loaded: %s %s at (%d,%d)\n", record.username, record.license,
+      //        record.posX, record.posY);
+    } else {
+      printf("Invalid line: %s\n", line);
+    }
+  }
+
+  fclose(PloadOccipied);
+}
+
 // Return a color depending on the identifier, this is used in the raylib
 // parkingGrid printer "showParkingGridRayLib"
 Color getParkingColor(ParkingType t) {
@@ -264,23 +297,6 @@ void showParkingGridRayLib() {
   }
 }
 
-/*
-carSize setCarSize() {
-  carSize type;
-
-  if (strcasecmp(car_size, "Hatchback")) {
-    printf("small");
-  }
-  if (strcasecmp(car_size, "Sudan")) {
-    printf("medium");
-  }
-  if (strcasecmp(car_size, "SUV")) {
-    printf("Large");
-  }
-
-  return type;
-}
-*/
 // Function to check if a car can fit in a given parking lot
 boolean canFit(carSize car, lot *currentLot) {
 

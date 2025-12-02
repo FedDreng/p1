@@ -117,8 +117,8 @@ int licenseplate(void) {
   } else {
 #ifdef DEBUG
     // fuel_type = "El";
-    fuel_type = "Bezin";
-    car_size = " ";
+    fuel_type = "El";
+    car_size = "Hatchback";
 
 #endif
 #ifndef DEBUG

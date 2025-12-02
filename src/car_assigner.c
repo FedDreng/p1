@@ -127,6 +127,7 @@ void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 void assignCar(Car *car) {
   // strcpy(car->Pref.username, "Mikkel");
   // strcpy(car->Pref.licensePlate, "AB26654");
+
   lot *chosen = chooseBestLot(car);
 
   if (chosen == NULL) {
