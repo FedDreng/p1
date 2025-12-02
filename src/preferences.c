@@ -16,6 +16,7 @@ char prefFileLocation[] = "../assets/userPreferences.txt"; // preference file ab
 FILE *fUserPref;
 FILE *fUserTemp;
 struct userPref currentUser;
+int currentUserNR;
 struct userPref tempUser;
 
 int prefOption = -1;
@@ -163,8 +164,50 @@ void savePreferences(boolean makeDefault) { // function to save preference profi
   }
 }
 
-void setPreferences(int userProfile) { // function to alter a specific profile
-
+void setPreferences() {
+  // function to alter a specific profile
+  struct userPref *allUsers = calloc(numberOfProfiles+1, sizeof(struct userPref));
+  fclose(fUserPref);
+  fUserPref = fopen(prefFileLocation, "r");
+  for (int i = 0; i < numberOfProfiles; i++) {
+    if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", allUsers[i].username, strupr(allUsers[i].licensePlate), &allUsers[i].is_handicapped, &allUsers[i].is_ev, &allUsers[i].prefClose, &allUsers[i].prefIsolated) == 6) {
+      printf("Profile %d read to struct\n", i);
+    }
+    if (i+1 == currentUserNR) {
+      printf("\ncurrent: %s, allUsers: %s i: %d", currentUser.username, allUsers[i].username, i);
+      printf("\ncurrent: %s, allUsers: %s\n", currentUser.licensePlate, allUsers[i].licensePlate);
+      for (int h = 0; h <= strlen(tempName); h++) {
+        if (h == strlen(tempName)) {
+          allUsers[i].username[h] = '\0';
+        } else {
+          allUsers[i].username[h] = currentUser.username[h];
+        }
+      }
+      for (int h = 0; h <= strlen(currentUser.licensePlate); h++) {
+        if (h == strlen(currentUser.licensePlate)) {
+          allUsers[i].licensePlate[h] = '\0';
+        } else {
+          allUsers[i].licensePlate[h] = currentUser.licensePlate[h];
+        }
+      }
+      allUsers[i].is_handicapped = currentUser.is_handicapped;
+      allUsers[i].is_ev = currentUser.is_ev;
+      allUsers[i].prefClose = currentUser.prefClose;
+      allUsers[i].prefIsolated = currentUser.prefIsolated;
+    }
+  }
+  fclose(fUserPref);
+  fUserPref = fopen(prefFileLocation, "w");
+  for (int k = 0; k < numberOfProfiles; k++) {
+    printf("%s , %s , %d , %d , %d , %d\n", allUsers[k].username, strupr(allUsers[k].licensePlate), allUsers[k].is_handicapped, allUsers[k].is_ev, allUsers[k].prefClose, allUsers[k].prefIsolated);
+    if (k == 0) {
+      fprintf(fUserPref, "%s , %s , %d , %d , %d , %d", allUsers[k].username, strupr(allUsers[k].licensePlate), allUsers[k].is_handicapped, allUsers[k].is_ev, allUsers[k].prefClose, allUsers[k].prefIsolated);
+    } else {
+      fprintf(fUserPref, "\n%s , %s , %d , %d , %d , %d", allUsers[k].username, strupr(allUsers[k].licensePlate), allUsers[k].is_handicapped, allUsers[k].is_ev, allUsers[k].prefClose, allUsers[k].prefIsolated);
+    }
+  }
+  fclose(fUserPref);
+  free(allUsers);
 }
 
 void changePreferences() {
@@ -263,16 +306,82 @@ int changePrefGui() {
       }
       break;
     case 1:
+      DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
+      DrawText("Input New Name", 300, 200, 20, BLACK);
+      if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempName, 21, textBoxEditable[0])) {
+        textBoxEditable[0] = !textBoxEditable[0];
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        for (int i = 0; i <= strlen(tempName); i++) {
+          if (i == strlen(tempName)) {
+            currentUser.username[i] = '\0';
+          } else {
+            currentUser.username[i] = tempName[i];
+          }
+        }
+        setPreferences();
+        tempName[0] = '\0';
+      }
       break;
     case 2:
+      DrawText(TextFormat("Current Profile and License Plate: %s, %s", currentUser.username, currentUser.licensePlate), 200, 100, 20, BLACK);
+      DrawText("Input New License Plate", 300, 200, 20, BLACK);
+      if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempPlate, 8, textBoxEditable[0])) {
+        textBoxEditable[0] = !textBoxEditable[0];
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        for (int i = 0; i <= strlen(tempPlate); i++) {
+          if (i == strlen(tempPlate)) {
+            currentUser.licensePlate[i] = '\0';
+          } else {
+            currentUser.licensePlate[i] = tempPlate[i];
+          }
+        }
+        setPreferences();
+        tempPlate[0] = '\0';
+      }
       break;
     case 3:
+      DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
+      if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, handicappedElementNames[currentUser.is_handicapped])) {
+        currentUser.is_handicapped = !currentUser.is_handicapped;
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        setPreferences();
+      }
       break;
     case 4:
+      DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
+      if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, handicappedElementNames[currentUser.is_ev])) {
+        currentUser.is_ev = !currentUser.is_ev;
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        setPreferences();
+      }
       break;
     case 5:
+      DrawText(TextFormat("Current Profile and Location Preference: %s, %d", currentUser.username, currentUser.prefClose), 200, 100, 20, BLACK);
+      DrawText("Input New Name", 300, 200, 20, BLACK);
+      if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempClose, 2, textBoxEditable[0])) {
+        textBoxEditable[0] = !textBoxEditable[0];
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        currentUser.prefClose = strtod(tempClose, &intEnd);
+        setPreferences();
+        tempClose[0] = '\0';
+      }
       break;
     case 6:
+      DrawText(TextFormat("Current Profile and Isolation Preference: %s, %d", currentUser.username, currentUser.prefIsolated), 200, 100, 20, BLACK);
+      DrawText("Input New Name", 300, 200, 20, BLACK);
+      if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempIso, 2, textBoxEditable[0])) {
+        textBoxEditable[0] = !textBoxEditable[0];
+      }
+      if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
+        currentUser.prefIsolated = strtod(tempIso, &intEnd);
+        setPreferences();
+        tempIso[0] = '\0';
+      }
       break;
     case 7:
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
@@ -283,7 +392,8 @@ int changePrefGui() {
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
         getPreferences(0);
         if (strtod(tempName, &intEnd) <= numberOfProfiles && tempName[0] != '\0' && strtod(tempName, &intEnd) != 0) {
-          getPreferences(strtod(tempName,&intEnd));
+          getPreferences(strtod(tempName, &intEnd));
+          currentUserNR = strtod(tempName, &intEnd);
         }
         tempName[0] = '\0';
       }

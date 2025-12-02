@@ -6,7 +6,7 @@
 
 void getPreferences(int userProfile);
 void savePreferences(boolean makeDefault);
-void setPreferences(int userProfile);
+void setPreferences();
 void changePreferences();
 int changePrefGui();
 
@@ -52,6 +52,7 @@ struct userPref {
 
 // char defaultProfile[20] = "";
 extern int numberOfProfiles;
+extern int currentUserNR;
 extern char defaultProfile[20];
 
 extern FILE *fUserPref;
