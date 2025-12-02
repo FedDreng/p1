@@ -51,9 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+./assets/occipied.txt
 .idea/
 cmake-build*
 build/
 .cache/
-
-./assets/occipied.txt
