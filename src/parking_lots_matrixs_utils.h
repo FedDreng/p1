@@ -48,6 +48,7 @@ Color getParkingColor(ParkingType t);
 boolean canFit(carSize car, lot *currentLot);
 
 extern int pee;
+extern boolean hasAssignedSpot;
 
 #define CELL_SIZE 50
 

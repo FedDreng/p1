@@ -167,10 +167,11 @@ void assignCar(Car *car) {
 
   if (chosen == NULL) {
     // SHOULD DRAW ON THE WINDOW INSTEAD
+    hasAssignedSpot = FALSE;
     printf("⚠️No suitable parking spot available!\n");
     return;
   }
-
+  hasAssignedSpot = TRUE;
   // if spot is found the set it as occupied, and current spot to blink
   chosen->occupied = TRUE;
   chosen->isBlinking = TRUE;

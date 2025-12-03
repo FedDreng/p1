@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+boolean hasAssignedSpot;
+
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
 void readParkingLotFile(char *filename) {
@@ -262,8 +264,6 @@ Color getParkingColor(ParkingType t) {
 }
 
 void showParkingGridRayLib() {
-  boolean hasAssignedSpot = FALSE;
-
   int gridWidth = GRID_WIDTH * CELL_SIZE;
   int gridHeight = GRID_HEIGHT * CELL_SIZE;
 
