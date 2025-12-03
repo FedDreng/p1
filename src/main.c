@@ -61,6 +61,12 @@ int main(void) {
       changePreferences();
     }
 
+    if (selectedElement == ChooseSpot) {
+      DrawNav();
+      showParkingGridRayLib();
+      mouseAssigner(&userCar);
+    }
+
     EndDrawing();
     lastElement = selectedElement;
   }

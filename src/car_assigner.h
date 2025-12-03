@@ -12,7 +12,7 @@ typedef struct {
   struct userPref Pref;
 } Car;
 
-void mouseAssigner();
+void mouseAssigner(Car *car);
 void loadOccipied();
 void assigner(int x, int y);
 void assignCar(Car *car);

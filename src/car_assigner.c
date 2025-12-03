@@ -241,30 +241,51 @@ Car createCarFromInput(Car current) {
   return current;
 }
 
-void mouseAssigner() {
-  // Check if the left mouse button was just pressed
+void mouseAssigner(Car *car) {
+
+  // Calculate same grid offsets as draw function
+  int gridWidth = GRID_WIDTH * CELL_SIZE;
+  int gridHeight = GRID_HEIGHT * CELL_SIZE;
+
+  int offsetX = (GetScreenWidth() - gridWidth) / 2;
+  int offsetY =
+      ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
+
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 
-    // Get the mouse coordinates in terms of grid cells
-    int mx = GetMouseX() / CELL_SIZE; // Convert pixel X to cell X
-    int my = GetMouseY() / CELL_SIZE; // Convert pixel Y to cell Y
+    // Mouse relative to grid
+    int mx = (GetMouseX() - offsetX) / CELL_SIZE;
+    int my = (GetMouseY() - offsetY) / CELL_SIZE;
 
-    // Check if the mouse click is within the grid bounds
+    // Bounds check
     if (mx >= 0 && mx < GRID_WIDTH && my >= 0 && my < GRID_HEIGHT) {
 
-      // Get a pointer to the parking lot cell at the clicked location
       lot *currentLot = &parkingGrid[my][mx];
 
-      // Define a car of size small
-      carSize myCar = {true, false, false}; // small car
+      // Use REAL car size stored in car->Pref.size
+      if (canFit(car->size, currentLot)) {
 
-      // Check if the car can fit in the selected lot
-      if (canFit(myCar, currentLot)) {
-        // Mark the lot as occupied if the car fits
+        // Reset blinking
+        for (int y = 0; y < GRID_HEIGHT; y++)
+          for (int x = 0; x < GRID_WIDTH; x++)
+            parkingGrid[y][x].isBlinking = FALSE;
+
+        hasAssignedSpot = TRUE;
+
+        // Same behavior as assignCar()
         currentLot->occupied = TRUE;
+        currentLot->isBlinking = TRUE;
+
+        // Save assignment
+        OccipiedSpot(car->Pref.username, car->Pref.licensePlate, &currentLot->x,
+                     &currentLot->y);
+
+        // Clear car (same as assignCar)
+        memset(car, 0, sizeof(Car));
+
       } else {
-        // Print a message if the car cannot fit in this lot
-        printf("Car does NOT fit at (%d, %d)\n", mx, my);
+        hasAssignedSpot = FALSE;
+        printf("❌ Car does NOT fit at (%d, %d)\n", mx, my);
       }
     }
   }
