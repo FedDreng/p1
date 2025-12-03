@@ -1,17 +1,11 @@
-//
-// Created by fed on 11/20/25.
-//
-#include "Licenseplate.h"
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <dirent.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
-int isAssigned = 0;
 
 void readParkingLotFile(char *filename) {
 
@@ -268,12 +262,26 @@ Color getParkingColor(ParkingType t) {
 }
 
 void showParkingGridRayLib() {
+  boolean hasAssignedSpot = FALSE;
+
   int gridWidth = GRID_WIDTH * CELL_SIZE;
   int gridHeight = GRID_HEIGHT * CELL_SIZE;
 
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
   int offsetY =
       ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
+  // --- Draw title text above the grid ---
+  const char *msg;
+  if (hasAssignedSpot) {
+    msg = "You have been assigned this spot";
+    DrawText(msg, (GetScreenWidth() - MeasureText(msg, 24)) / 2, offsetY - 40,
+             24, GREEN);
+  } else {
+    msg = "Could not find a suitable spot, but you can manually select one if "
+          "possible";
+    DrawText(msg, (GetScreenWidth() - MeasureText(msg, 20)) / 2, offsetY - 40,
+             20, RED);
+  }
 
   // Draw parking grid manually (so we can add occupied colors and blinking)
   for (int y = 0; y < GRID_HEIGHT; y++) {
@@ -287,7 +295,7 @@ void showParkingGridRayLib() {
       if (currentLot->isBlinking) {
         // Blink yellow every 0.5 seconds
         if (fmod(GetTime() * 2.0, 2.0) < 1.0)
-          color = YELLOW;
+          color = ORANGE;
         else
           color = getParkingColor(currentLot->type);
       } else if (currentLot->occupied) {
