@@ -9,7 +9,9 @@ typeBoolean hasAssignedSpot;
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
-void readParkingLotFile(char *filename) {
+int read_x = 0, read_y = 0;
+
+void readParkingLotFile() {
 
   // int countedFiles = countFiles("../assets/parkingLots");
 
@@ -45,130 +47,138 @@ void readParkingLotFile(char *filename) {
   scanf("%d", &countedFiles);
   countedFiles -= 1;
 
-  // printf("countfiles: %d\n", countedFiles);
-
   char chosenFileName[256];
-
-  // char chosenFileName[] = "../assets/parkingLots/volBollingTheHomie.txt";
-  printf("fywaaah, %d", countedFiles);
   sprintf(chosenFileName, "../assets/parkingLots/%s", files[countedFiles]);
 
   FILE *fp = fopen(chosenFileName, "r");
-
   if (fp == NULL) {
-    printf("retard");
+    perror("No files to read.");
   }
 
   printf("\n");
-  char buffer[256];
 
-  // Read and print each line
-  while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-    printf("%s", buffer);
 
-    // if (buffer[0] == 'c') {
-    //   printf("among us");
-    // }
-  }
-
-  printf("\n\n");
-
-  // første gang laver vi funktionen for at se størrelsen af parking lot
 
   int ch;
 
-  int h = 0, k = 0;
+  read_x = 0, read_y = 1;
 
+  //just to make sure;
   rewind(fp);
 
   while ((ch = fgetc(fp)) != EOF) {
 
     if (ch == '\n') {
-      k++;
-      h = 0;
+      read_y++;
+      read_x = 0;
     } else if (ch == ' ') {
-      h--;
+      read_x--;
     }
 
-    h++;
+    read_x++;
   }
-  h--;
+  read_x--;
 
-  printf("x: %d, y: %d ", h, k);
+  printf("x: %d, y: %d ", read_x, read_y);
 
-  // derefter assigner vi
 
-  ParkingType designLot[h][k];
-
-  // int i = 0;
-  printf("\n\n");
-
-  /*for (int i = 0; i <= k; i++) {
-    //vertical loop
-    for (int y = 0; y < h; y++) {
-      printf("(x row)");
-      if () {
-
-      }
-    }
-
-    printf("\n");
-  }*/
 
   rewind(fp);
-  h = 0, k = 0;
+  int h = 0, k = 0;
 
   printf("\n\n");
 
   while ((ch = fgetc(fp)) != EOF) {
-
-    // printf("inside loop yo");
 
     if (ch == ' ') {
       continue;
     }
 
-    if (ch == 'r') {
-      printf(" r ");
-      designLot[h][k] = road;
-      printf("ROAD ROAD ROAD ROAD");
-      h++;
-    } else if (ch == '\n') {
-      printf("\n");
-      k++;
-      h = 0;
-    } else if (ch == 'o') {
-      printf(" o ");
-      designLot[h][k] = obstacle;
-      h++;
+    //lot assigner boilerplate
+    switch (ch) {
+      case 'r':
+        printf(" r ");
+        parkingGrid[k][h].type = road;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'o':
+        printf(" o ");
+        parkingGrid[k][h].type = obstacle;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case '\n':
+        printf("\n");
+        k++;
+        h = 0;
+        break;
+      case 's':
+        printf(" s ");
+        parkingGrid[k][h].type = parking_bay;
+        parkingGrid[k][h].lot_size.is_small = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'm':
+        printf(" m ");
+        parkingGrid[k][h].type = parking_bay;
+        parkingGrid[k][h].lot_size.is_medium = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'l':
+        printf(" l ");
+        parkingGrid[k][h].type = parking_bay;
+        parkingGrid[k][h].lot_size.is_large = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'h':
+        printf(" h ");
+        parkingGrid[k][h].type = handicaped;
+        parkingGrid[k][h].lot_size.is_large = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'n':
+        printf(" medium EV ");
+        parkingGrid[k][h].type = EV;
+        parkingGrid[k][h].lot_size.is_medium = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+      case 'k':
+        printf(" large EV ");
+        parkingGrid[k][h].type = EV;
+        parkingGrid[k][h].lot_size.is_medium = TRUE;
+        parkingGrid[h][k].x = h;
+        parkingGrid[h][k].y = k;
+        h++;
+        break;
+
+
+      default:
+        printf("did not fit any case");
     }
 
-    if (ch == '\n') {
-      printf("\n");
-    }
 
     printf(" (h: %d, k: %d) ", h, k);
   }
 
-  // husk, starter fra 0... shiii - VIRKER STADIG IK, BLIR GAL
-
-  printf("\ndesign lot given: %d\n", designLot[1][1]);
-  printf("design lot given: %d\n", designLot[1][3]);
+  printf("\ndesign lot given: %d\n", parkingGrid[1][1].type);
+  printf("design lot given: %d\n", parkingGrid[1][0].type);
 }
 
 void createParkingLotGrid() {
 
-  /*printf("How many files do you have?");
-  int filesP;
-  scanf("%d", &filesP);
-
-  //string
-
-  for (int i = 0; i < filesP; i++) {
-      printf("Write name of file 1 (must not contain spaces)");
-      //scanf("" *s);  todo: string which inputs to readParkingLotFile func;
-      //readParkingLotFile(string);
-  }*/
 
   // setting the layout for the grid we are working with right now it is this
   // (parkingGrid)
@@ -264,8 +274,8 @@ Color getParkingColor(ParkingType t) {
 }
 
 void showParkingGridRayLib() {
-  int gridWidth = GRID_WIDTH * CELL_SIZE;
-  int gridHeight = GRID_HEIGHT * CELL_SIZE;
+  int gridWidth = read_x * CELL_SIZE;
+  int gridHeight = read_y * CELL_SIZE;
 
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
   int offsetY =
@@ -284,28 +294,27 @@ void showParkingGridRayLib() {
   }
 
   // Draw parking grid manually (so we can add occupied colors and blinking)
-  for (int y = 0; y < GRID_HEIGHT; y++) {
-    for (int x = 0; x < GRID_WIDTH; x++) {
+  for (int y = 0; y < read_y; y++) {
+    for (int x = 0; x < read_x; x++) {
       lot *currentLot = &parkingGrid[y][x];
       Rectangle rect = {offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE,
                         CELL_SIZE, CELL_SIZE};
 
-      Color color;
+      //Color color;
 
-      if (currentLot->isBlinking) {
-        // Blink yellow every 0.5 seconds
-        if (fmod(GetTime() * 2.0, 2.0) < 1.0)
-          color = ORANGE;
-        else
-          color = getParkingColor(currentLot->type);
-      } else if (currentLot->occupied) {
-        color = DARKGRAY;
+      // check if the parking lot is occupied                
+      if (currentLot->occupied) {
+        DrawRectangleRec(rect, DARKGRAY);
+      } else if (currentLot->isBlinking) {
+        if (fmod(GetTime() * 2.0, 2.0) < 1.0) {
+          DrawRectangleRec(rect, ORANGE);
+        }
       } else {
-        color = getParkingColor(currentLot->type);
+        // print the color for the specific identifier
+        DrawRectangleRec(rect, getParkingColor(currentLot->type));
+        // set the border to black
+        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
       }
-
-      DrawRectangleRec(rect, color);
-      DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
     }
   }
 }

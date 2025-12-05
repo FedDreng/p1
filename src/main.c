@@ -7,6 +7,7 @@
 #include "preferences.h"
 #include "raygui.h"
 #include "raylib.h"
+#include <stdlib.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
@@ -15,12 +16,12 @@ int main(void) {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Assigner");
 
   SetTargetFPS(60);
-
-  createParkingLotGrid();
+  //createParkingLotGrid();
 
   readParkingLotFile();
   loadOccipied();
   getPreferences(0);
+
 
   licenseplate();
 
