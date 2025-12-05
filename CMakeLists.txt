@@ -10,25 +10,26 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
-    raylib
-    GIT_REPOSITORY https://github.com/raysan5/raylib.git
-    GIT_TAG master
+        raylib
+        GIT_REPOSITORY https://github.com/raysan5/raylib.git
+        GIT_TAG master
 )
 FetchContent_MakeAvailable(raylib)
 
 # --- Add raygui header (no build target needed) ---
 FetchContent_Declare(
-    raygui
-    GIT_REPOSITORY https://github.com/raysan5/raygui.git
-    GIT_TAG master
+        raygui
+        GIT_REPOSITORY https://github.com/raysan5/raygui.git
+        GIT_TAG master
 )
 FetchContent_GetProperties(raygui)
 if(NOT raygui_POPULATED)
-  FetchContent_MakeAvailable(raygui)
+    FetchContent_MakeAvailable(raygui)
 endif()
 
 # Include folder manually
 include_directories(${raygui_SOURCE_DIR}/src)
+
 
 # --- Source files ---
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c")
@@ -42,15 +43,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 # Link only raylib
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
-# --- Add libcurl ---
-find_package(CURL REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CURL_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CURL_LIBRARIES})
-
+# --- Platform-specific HTTP support for licenseplate() ---
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_WINHTTP)
+    target_link_libraries(${PROJECT_NAME} PRIVATE winhttp)
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_CURL_CMD)
+endif()
 
 # Set ASSETS_PATH
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-
 
 # Linux needs access to syscall numbers and O_DIRECTORY
 #if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
