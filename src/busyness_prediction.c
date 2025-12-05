@@ -113,30 +113,6 @@ void printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
   }
 }
 
-days getDay(char day[]) {
-  /*Lav en string compare check. Der skal checkes om
-   *alle de først bogstaver passer i user input og navnet på dagen. Hvis det gør
-   *kan der returneres den korrekte dag.
-   */
-  if (strcmp(("mon"), day) == 0) {
-    return monday;
-  } else if (strcmp(("tue"), day) == 0) {
-    return tuesday;
-  } else if (strcmp(("wed"), day) == 0) {
-    return wednesday;
-  } else if (strcmp(("thu"), day) == 0) {
-    return thursday;
-  } else if (strcmp(("fri"), day) == 0) {
-    return friday;
-  } else if (strcmp(("sat"), day) == 0) {
-    return saturday;
-  } else if (strcmp(("sun"), day) == 0) {
-    return sunday;
-  } else {
-    return error;
-  }
-}
-
 int getDayGui(int *step) {
   static int dayIndex = 0;
   // Optegn tekst til at beskrive det er dage
