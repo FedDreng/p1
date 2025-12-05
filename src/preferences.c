@@ -22,14 +22,14 @@ struct userPref tempUser;
 int prefOption = -1;
 char tempName[21] = "\0";
 char tempPlate[8] = "\0";
-boolean tempHandi = false;
-boolean tempEV = false;
+typeBoolean tempHandi = false;
+typeBoolean tempEV = false;
 char tempClose[2] = "\0";
 char tempIso[2] = "\0";
 int keyPressedPref;
 char* intEnd;
 //int letterCount[6] = {0, 0, 0, 0, 0, 0};
-boolean textBoxEditable[6] = {0, 0, 0, 0, 0, 0};
+typeBoolean textBoxEditable[6] = {0, 0, 0, 0, 0, 0};
 
 int boxX1;
 int boxX2;
@@ -115,7 +115,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
   }
 }
 
-void savePreferences(boolean makeDefault) { // function to save preference profiles to file
+void savePreferences(typeBoolean makeDefault) { // function to save preference profiles to file
   if (makeDefault == 0) {
     fclose(fUserPref);
     fUserPref = fopen(prefFileLocation, "a");

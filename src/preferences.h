@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 void getPreferences(int userProfile);
-void savePreferences(boolean makeDefault);
+void savePreferences(typeBoolean makeDefault);
 void setPreferences();
 void changePreferences();
 int changePrefGui();
@@ -38,10 +38,9 @@ struct userPref {
   char username[20];
   char licensePlate[8]; // the user can save their license plate so the app can
                         // remember for future use
-  boolean is_handicapped; // defines whether the license plate is attached to a
+  typeBoolean is_handicapped; // defines whether the license plate is attached to a
                           // handicap car or not
-  boolean
-      is_ev; // defines whether the license plate is attached to an EV or not
+  typeBoolean is_ev; // defines whether the license plate is attached to an EV or not
   int prefClose; // the user can choose which parking lot they prefer to park at
                  // so the app will weigh that one higher when selecting parking
                  // spot

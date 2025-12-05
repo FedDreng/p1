@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-boolean hasAssignedSpot;
+typeBoolean hasAssignedSpot;
 
 lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
@@ -311,7 +311,7 @@ void showParkingGridRayLib() {
 }
 
 // Function to check if a car can fit in a given parking lot
-boolean canFit(carSize car, lot *currentLot) {
+typeBoolean canFit(carSize car, lot *currentLot) {
 
   // If the lot is already occupied, the car cannot fit
   if (currentLot->occupied)

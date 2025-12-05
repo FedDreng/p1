@@ -5,9 +5,9 @@
 #include "raylib.h"
 #include <string.h>
 
-typedef enum { TRUE, FALSE } boolean;
+typedef enum { TRUE, FALSE } typeBoolean;
 
-boolean is_valid_size(const char *s) {
+typeBoolean is_valid_size(const char *s) {
   if (!s)
     return false;
   return strcasecmp(s, "Hatchback") == 0 || strcasecmp(s, "Sedan") == 0 ||

@@ -5,10 +5,10 @@
 // car builder
 typedef struct {
   carSize size; // small / medium / large
-  boolean is_ev;
-  boolean is_handicapped;
-  boolean placementPref;
-  boolean want_Isolated;
+  typeBoolean is_ev;
+  typeBoolean is_handicapped;
+  typeBoolean placementPref;
+  typeBoolean want_Isolated;
   struct userPref Pref;
 } Car;
 

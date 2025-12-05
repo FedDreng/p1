@@ -1,14 +1,14 @@
 #ifndef PARKING_H
 #define PARKING_H
-typedef enum { FALSE, TRUE } boolean;
+typedef enum { FALSE, TRUE } typeBoolean;
 
 typedef enum { handicaped, road, EV, parking_bay, obstacle } ParkingType;
 
 // structure that defines the sizes of the parking spaces depending on vehicles
 typedef struct {
-  boolean is_small;  // HATCHBACK
-  boolean is_medium; // SEDAN
-  boolean is_large;  // SUV, TRUCK
+  typeBoolean is_small;  // HATCHBACK
+  typeBoolean is_medium; // SEDAN
+  typeBoolean is_large;  // SUV, TRUCK
 } carSize;
 
 typedef struct {
@@ -16,8 +16,8 @@ typedef struct {
   char y_axis; // Name for y axis (H3, I3 ...)
   carSize lot_size;
   ParkingType type;
-  boolean isBlinking;
-  boolean occupied;
+  typeBoolean isBlinking;
+  typeBoolean occupied;
   carSize allowed;
 
   int dist_to_university;
@@ -45,10 +45,10 @@ void readParkingLotFile();
 
 Color getParkingColor(ParkingType t);
 
-boolean canFit(carSize car, lot *currentLot);
+typeBoolean canFit(carSize car, lot *currentLot);
 
 extern int pee;
-extern boolean hasAssignedSpot;
+extern typeBoolean hasAssignedSpot;
 
 #define CELL_SIZE 50
 
