@@ -48,7 +48,10 @@ if(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE USE_WINHTTP)
     target_link_libraries(${PROJECT_NAME} PRIVATE winhttp)
 else()
-    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_CURL_CMD)
+    find_package(CURL REQUIRED)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CURL_INCLUDE_DIRS})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${CURL_LIBRARIES})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_LIBCURL)
 endif()
 
 # Set ASSETS_PATH
