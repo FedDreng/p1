@@ -12,7 +12,7 @@
 #define SCREEN_HEIGHT 450
 
 int main(void) {
-  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "title");
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Assigner");
 
   SetTargetFPS(60);
 

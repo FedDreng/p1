@@ -1,4 +1,3 @@
-#include "navbar.h"
 #include "preferences.h"
 #include <curl/curl.h>
 #include <stdio.h>
