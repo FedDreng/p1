@@ -52,8 +52,8 @@ extern typeBoolean hasAssignedSpot;
 
 #define CELL_SIZE 50
 
-#define GRID_WIDTH 7
-#define GRID_HEIGHT 7
+#define GRID_WIDTH 10
+#define GRID_HEIGHT 10
 
 // the idea of the grid:
 // r r r r r r r

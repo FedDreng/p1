@@ -1,7 +1,6 @@
 #include "parking_lots_matrixs_utils.h"
 #include "raylib.h"
 #include <dirent.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -13,23 +12,22 @@ int read_x = 0, read_y = 0;
 
 void readParkingLotFile() {
 
-  // int countedFiles = countFiles("../assets/parkingLots");
-
   int countedFiles = 0;
 
   const char *path = "../assets/parkingLots";
   struct dirent *entry;
 
-  char *files[10]; // current cap of files is 10, increase if needed.
+  char *files[10];
 
   DIR *dir = opendir(path);
   if (dir == NULL) {
     perror("opendir");
+    return;
   }
 
   while ((entry = readdir(dir)) != NULL) {
-    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-      continue; // skip these
+    if (strcmp(entry->d_name, ". ") == 0 || strcmp(entry->d_name, "..") == 0) {
+      continue;
     }
 
     printf("%s\n", entry->d_name);
@@ -53,135 +51,179 @@ void readParkingLotFile() {
   FILE *fp = fopen(chosenFileName, "r");
   if (fp == NULL) {
     perror("No files to read.");
+    return;
   }
 
   printf("\n");
 
-
-
+  // Calculate dimensions
   int ch;
-
-  read_x = 0, read_y = 1;
-
-  //just to make sure;
-  rewind(fp);
+  read_x = 0;
+  read_y = 0;
+  int current_x = 0;
+  int max_x = 0;
 
   while ((ch = fgetc(fp)) != EOF) {
-
     if (ch == '\n') {
+      if (current_x > max_x) {
+        max_x = current_x;
+      }
       read_y++;
-      read_x = 0;
-    } else if (ch == ' ') {
-      read_x--;
+      current_x = 0;
+    } else if (ch != ' ') {
+      current_x++;
     }
-
-    read_x++;
   }
-  read_x--;
 
-  printf("x: %d, y: %d ", read_x, read_y);
+  // Handle last line if no newline at end
+  if (current_x > 0) {
+    if (current_x > max_x) {
+      max_x = current_x;
+    }
+    read_y++;
+  }
 
+  read_x = max_x;
 
+  printf("File dimensions: width=%d, height=%d\n", read_x, read_y);
+  printf("Grid capacity: width=%d, height=%d\n", GRID_WIDTH, GRID_HEIGHT);
 
+  if (read_x > GRID_WIDTH || read_y > GRID_HEIGHT) {
+    printf("ERROR: File size (%dx%d) exceeds grid capacity (%dx%d)\n", read_x,
+           read_y, GRID_WIDTH, GRID_HEIGHT);
+    printf("GRID_WIDTH and GRID_HEIGHT to small\n");
+    fclose(fp);
+    return;
+  }
+
+  if (read_x == 0 || read_y == 0) {
+    printf("ERROR: Invalid dimensions\n");
+    fclose(fp);
+    return;
+  }
+
+  // Initialize entire grid
+  for (int i = 0; i < GRID_HEIGHT; i++) {
+    for (int j = 0; j < GRID_WIDTH; j++) {
+      parkingGrid[i][j].type = road;
+      parkingGrid[i][j].x = j;
+      parkingGrid[i][j].y = i;
+      parkingGrid[i][j].occupied = FALSE;
+      parkingGrid[i][j].isBlinking = FALSE;
+      parkingGrid[i][j].allowed = (carSize){FALSE, FALSE, FALSE};
+      parkingGrid[i][j].lot_size = (carSize){FALSE, FALSE, FALSE};
+    }
+  }
+
+  // Now read and parse the file
   rewind(fp);
   int h = 0, k = 0;
 
-  printf("\n\n");
+  printf("\nParsing file:\n");
 
   while ((ch = fgetc(fp)) != EOF) {
 
+    // Skip spaces
     if (ch == ' ') {
       continue;
     }
 
-    //lot assigner boilerplate
-    switch (ch) {
-      case 'r':
-        printf(" r ");
-        parkingGrid[k][h].type = road;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'o':
-        printf(" o ");
-        parkingGrid[k][h].type = obstacle;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case '\n':
-        printf("\n");
-        k++;
-        h = 0;
-        break;
-      case 's':
-        printf(" s ");
-        parkingGrid[k][h].type = parking_bay;
-        parkingGrid[k][h].lot_size.is_small = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'm':
-        printf(" m ");
-        parkingGrid[k][h].type = parking_bay;
-        parkingGrid[k][h].lot_size.is_medium = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'l':
-        printf(" l ");
-        parkingGrid[k][h].type = parking_bay;
-        parkingGrid[k][h].lot_size.is_large = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'h':
-        printf(" h ");
-        parkingGrid[k][h].type = handicaped;
-        parkingGrid[k][h].lot_size.is_large = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'n':
-        printf(" medium EV ");
-        parkingGrid[k][h].type = EV;
-        parkingGrid[k][h].lot_size.is_medium = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-      case 'k':
-        printf(" large EV ");
-        parkingGrid[k][h].type = EV;
-        parkingGrid[k][h].lot_size.is_medium = TRUE;
-        parkingGrid[h][k].x = h;
-        parkingGrid[h][k].y = k;
-        h++;
-        break;
-
-
-      default:
-        printf("did not fit any case");
+    // Handle newline
+    if (ch == '\n') {
+      printf("\n");
+      k++;
+      h = 0;
+      continue;
     }
 
+    // Bounds check
+    if (k >= read_y || h >= read_x) {
+      h++;
+      continue;
+    }
 
-    printf(" (h: %d, k: %d) ", h, k);
+    // Parse character
+    switch (ch) {
+    case 'r':
+      printf("r ");
+      parkingGrid[k][h].type = road;
+      parkingGrid[k][h].lot_size = (carSize){FALSE, FALSE, FALSE};
+      parkingGrid[k][h].allowed = (carSize){FALSE, FALSE, FALSE};
+      break;
+
+    case 'o':
+      printf("o ");
+      parkingGrid[k][h].type = obstacle;
+      parkingGrid[k][h].lot_size = (carSize){FALSE, FALSE, FALSE};
+      parkingGrid[k][h].allowed = (carSize){FALSE, FALSE, FALSE};
+      break;
+
+    case 's':
+      printf("s ");
+      parkingGrid[k][h].type = parking_bay;
+      parkingGrid[k][h].lot_size = (carSize){TRUE, FALSE, FALSE}; // Small space
+      parkingGrid[k][h].allowed =
+          (carSize){TRUE, FALSE, FALSE}; // Only small cars fit
+      break;
+
+    case 'm':
+      printf("m ");
+      parkingGrid[k][h].type = parking_bay;
+      parkingGrid[k][h].lot_size =
+          (carSize){FALSE, TRUE, FALSE}; // Medium space
+      parkingGrid[k][h].allowed =
+          (carSize){TRUE, TRUE, FALSE}; // Small and medium cars fit
+      break;
+
+    case 'l':
+      printf("l ");
+      parkingGrid[k][h].type = parking_bay;
+      parkingGrid[k][h].lot_size = (carSize){FALSE, FALSE, TRUE}; // Large space
+      parkingGrid[k][h].allowed = (carSize){TRUE, TRUE, TRUE}; // All cars fit
+      break;
+
+    case 'h':
+      printf("h ");
+      parkingGrid[k][h].type = handicaped;
+      parkingGrid[k][h].lot_size =
+          (carSize){FALSE, FALSE, TRUE}; // Large space (handicap accessible)
+      parkingGrid[k][h].allowed = (carSize){
+          FALSE, TRUE, TRUE}; // Medium and large cars (with handicap permit)
+      break;
+
+    case 'n':
+      printf("n ");
+      parkingGrid[k][h].type = EV;
+      parkingGrid[k][h].lot_size =
+          (carSize){FALSE, TRUE, FALSE}; // Medium EV space
+      parkingGrid[k][h].allowed =
+          (carSize){TRUE, TRUE, FALSE}; // Small and medium EVs
+      break;
+
+    case 'k':
+      printf("k ");
+      parkingGrid[k][h].type = EV;
+      parkingGrid[k][h].lot_size =
+          (carSize){FALSE, FALSE, TRUE}; // Large EV space
+      parkingGrid[k][h].allowed =
+          (carSize){TRUE, TRUE, TRUE}; // All EVs (small, medium, large)
+      break;
+
+    default:
+      printf("?  ");
+      break;
+    }
+
+    h++;
   }
 
-  printf("\ndesign lot given: %d\n", parkingGrid[1][1].type);
-  printf("design lot given: %d\n", parkingGrid[1][0].type);
+  printf("\n\nGrid loaded successfully: %dx%d\n", read_x, read_y);
+
+  fclose(fp);
 }
 
 void createParkingLotGrid() {
 
-
-  // setting the layout for the grid we are working with right now it is this
-  // (parkingGrid)
   ParkingType design[GRID_HEIGHT][GRID_WIDTH] = {
       {road, road, road, road, road, road, road},
       {road, obstacle, obstacle, obstacle, obstacle, obstacle, obstacle},
@@ -199,63 +241,55 @@ void createParkingLotGrid() {
       parkingGrid[y][x].y = y;
       parkingGrid[y][x].type = design[y][x];
 
-      // setting out the parking lot size depending on type identifier
-      // (enum type)
       if (design[y][x] == parking_bay) {
-        parkingGrid[y][x].allowed =
-            (carSize){true, true, true}; // small/med/large
+        parkingGrid[y][x].allowed = (carSize){true, true, true};
       } else if (design[y][x] == handicaped) {
-        parkingGrid[y][x].allowed = (carSize){false, true, true}; // med/large
+        parkingGrid[y][x].allowed = (carSize){false, true, true};
       } else if (design[y][x] == EV) {
-        parkingGrid[y][x].allowed = (carSize){true, true, false}; // small/med
+        parkingGrid[y][x].allowed = (carSize){true, true, false};
       } else {
-        parkingGrid[y][x].allowed =
-            (carSize){false, false,
-                      false}; // no car is able to park here (obstacle, road)
+        parkingGrid[y][x].allowed = (carSize){false, false, false};
       }
-      // parkingGrid[y][x].lot_size = (carSize){false, true, false};
 
-      // setting the cell to being available
       parkingGrid[y][x].occupied = FALSE;
     }
   }
 }
 
 void loadOccipied() {
-  FILE *PloadOccipied = fopen("../assets/occipied.txt", "r");
+  FILE *PloadOccipied = fopen("../assets/occipied. txt", "r");
   if (!PloadOccipied) {
-    perror("Failed to open file");
-    return;
+    return; // File doesn't exist yet, that's okay
   }
 
   char line[256];
   Occipied record;
+
+  printf("\nLoading occupied spots:\n");
 
   while (fgets(line, sizeof(line), PloadOccipied)) {
 
     if (sscanf(line, "%49[^,],%19[^,],%d,%d", record.username, record.license,
                &record.posX, &record.posY) == 4) {
 
-      // Mark grid cell as occupied
-      parkingGrid[record.posY][record.posX].occupied = TRUE;
+      if (record.posX >= 0 && record.posX < read_x && record.posY >= 0 &&
+          record.posY < read_y) {
 
-      // Optional: store owner info
-      strcpy(parkingGrid[record.posY][record.posX].username, record.username);
-      strcpy(parkingGrid[record.posY][record.posX].licensePlate,
-             record.license);
+        parkingGrid[record.posY][record.posX].occupied = TRUE;
+        strcpy(parkingGrid[record.posY][record.posX].username, record.username);
+        strcpy(parkingGrid[record.posY][record.posX].licensePlate,
+               record.license);
 
-      // printf("Loaded: %s %s at (%d,%d)\n", record.username, record.license,
-      //        record.posX, record.posY);
-    } else {
-      printf("Invalid line: %s\n", line);
+        printf("  %s at [%d][%d]\n", record.username, record.posY, record.posX);
+      } else {
+        printf("  OUT OF boundss: (%d,%d)\n", record.posX, record.posY);
+      }
     }
   }
 
   fclose(PloadOccipied);
 }
 
-// Return a color depending on the identifier, this is used in the raylib
-// parkingGrid printer "showParkingGridRayLib"
 Color getParkingColor(ParkingType t) {
   switch (t) {
   case road:
@@ -278,9 +312,8 @@ void showParkingGridRayLib() {
   int gridHeight = read_y * CELL_SIZE;
 
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
-  int offsetY =
-      ((GetScreenHeight() - gridHeight) / 2) + 60 / 2; // navbar offset
-  // --- Draw title text above the grid ---
+  int offsetY = ((GetScreenHeight() - gridHeight) / 2) + 60 / 2;
+
   const char *msg;
   if (hasAssignedSpot) {
     msg = "You have been assigned this spot";
@@ -293,26 +326,36 @@ void showParkingGridRayLib() {
              20, RED);
   }
 
-  // Draw parking grid manually (so we can add occupied colors and blinking)
   for (int y = 0; y < read_y; y++) {
     for (int x = 0; x < read_x; x++) {
       lot *currentLot = &parkingGrid[y][x];
       Rectangle rect = {offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE,
                         CELL_SIZE, CELL_SIZE};
 
-      //Color color;
+      if (currentLot->isBlinking) {
+        // BLINKING SPOT - alternates every 0.33 seconds
+        double time = GetTime();
+        int blinkPhase = (int)(time * 3.0) % 2; // Blinks 3 times per second
 
-      // check if the parking lot is occupied                
-      if (currentLot->occupied) {
-        DrawRectangleRec(rect, DARKGRAY);
-      } else if (currentLot->isBlinking) {
-        if (fmod(GetTime() * 2.0, 2.0) < 1.0) {
+        if (blinkPhase == 0) {
+          // Blink phase - show bright ORANGE
           DrawRectangleRec(rect, ORANGE);
+          // Draw thick yellow border for extra visibility
+          DrawRectangleLinesEx(rect, 4, YELLOW);
+        } else {
+          // Non-blink phase - show base color with green border
+          DrawRectangleRec(rect, getParkingColor(currentLot->type));
+          DrawRectangleLinesEx(rect, 4, GREEN);
         }
+
+      } else if (currentLot->occupied) {
+        // OCCUPIED SPOT
+        DrawRectangleRec(rect, DARKGRAY);
+        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
+
       } else {
-        // print the color for the specific identifier
+        // NORMAL SPOT
         DrawRectangleRec(rect, getParkingColor(currentLot->type));
-        // set the border to black
         DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK);
       }
     }
@@ -332,19 +375,37 @@ typeBoolean canFit(carSize car, lot *currentLot) {
       currentLot->type != EV)
     return FALSE;
 
-  // Small cars can fit anywhere regardless of lot size
-  if (car.is_small)
-    return TRUE;
+  // Check if car fits in the space size
+  // Small cars can fit in any size space (small, medium, or large)
+  if (car.is_small) {
+    return TRUE; // Small cars fit anywhere
+  }
 
-  // Medium cars can fit in medium or large lots
-  if (car.is_medium &&
-      (currentLot->allowed.is_medium || currentLot->allowed.is_large))
-    return TRUE;
+  // Medium cars need medium or large spaces
+  if (car.is_medium) {
+    if (currentLot->lot_size.is_medium || currentLot->lot_size.is_large) {
+      return TRUE;
+    }
+    return FALSE; // Medium car can't fit in small space
+  }
 
-  // Large cars can only fit in large lots
-  if (car.is_large && currentLot->allowed.is_large)
-    return TRUE;
+  // Large cars need large spaces only
+  if (car.is_large) {
+    if (currentLot->lot_size.is_large) {
+      return TRUE;
+    }
+    return FALSE; // Large car can't fit in small or medium space
+  }
 
-  // If none of the above conditions are met, the car cannot fit
   return FALSE;
 }
+
+// what i changed.
+// made some updates to carFit function,
+// made some changes to the file reader, now the x and y (h and k) is at the
+// right spot. As well as the file get closes propperly. The grid gets
+// Initialized before putting in the values. made the blinker work and got chat
+// to make it look cool because why not. carSize got inplemented the right way,
+// occipied gets set to false by default, updated loadOccipied to work with the
+// new part and now it got a way to tell if the thing is out of bounds
+// Added some debuging to see what is going on and what was wrong..
