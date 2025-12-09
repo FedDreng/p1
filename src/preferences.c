@@ -352,7 +352,7 @@ int changePrefGui() {
       break;
     case 4:
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
-      if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, handicappedElementNames[currentUser.is_ev])) {
+      if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, EVElementNames[currentUser.is_ev])) {
         currentUser.is_ev = !currentUser.is_ev;
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
@@ -360,8 +360,8 @@ int changePrefGui() {
       }
       break;
     case 5:
-      DrawText(TextFormat("Current Profile and Location Preference: %s, %d", currentUser.username, currentUser.prefClose), 200, 100, 20, BLACK);
-      DrawText("Input New Name", 300, 200, 20, BLACK);
+      DrawText(TextFormat("Current Profile and Proximity Preference: %s, %d", currentUser.username, currentUser.prefClose), 200, 100, 20, BLACK);
+      DrawText("Input New Proximity Preference", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempClose, 2, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
@@ -373,7 +373,7 @@ int changePrefGui() {
       break;
     case 6:
       DrawText(TextFormat("Current Profile and Isolation Preference: %s, %d", currentUser.username, currentUser.prefIsolated), 200, 100, 20, BLACK);
-      DrawText("Input New Name", 300, 200, 20, BLACK);
+      DrawText("Input New Isolation Preference", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempIso, 2, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
