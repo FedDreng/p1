@@ -92,6 +92,7 @@ void getPreferences(int userProfile) {   // function to read preference profiles
 
     if (strlen(currentUser.username) < 1) {
       getPreferences(1);
+      currentUserNR = 1;
     }
 
   } else if (userProfile > 0) { // when called with an argument other than 0 should read the specified profile if it exists

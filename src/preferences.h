@@ -49,7 +49,6 @@ struct userPref {
                     // possible or not
 };
 
-// char defaultProfile[20] = "";
 extern int numberOfProfiles;
 extern int currentUserNR;
 extern char defaultProfile[20];
