@@ -12,8 +12,8 @@ CarInputState input = {0};
 // -- Dont place on spot --
 #define IMPOSSIBLE -1000000
 // -- Around importance --
-#define VERY_IMPORTANT 500
-#define IMPORTANT 400
+#define VERY_IMPORTANT 700
+#define IMPORTANT 600
 // -- sizes --
 #define FIRST_SPOT 300
 #define SECOND_SPOT 250
@@ -220,9 +220,11 @@ Car createCarFromInput(Car current) {
     current.size.is_large = true;
   }
   // If cartype is not defined by licensePlate take user input
-  if (strcasecmp(fuel_type, "El") != 0) {
-    current.is_ev = input.car.isElectric;
+  if (strcasecmp(fuel_type, "El") == 0) {
+    input.car.isElectric = TRUE;
   }
+  current.is_ev = input.car.isElectric;
+
   // Get handicapped from user
   current.is_handicapped = input.car.isHandicap;
 

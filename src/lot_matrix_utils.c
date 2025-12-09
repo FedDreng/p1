@@ -281,9 +281,9 @@ void loadOccipied() {
                record.license);
 
         printf("  %s at [%d][%d]\n", record.username, record.posY, record.posX);
-      } else {
-        printf("  OUT OF boundss: (%d,%d)\n", record.posX, record.posY);
-      }
+      } // else {
+        // printf("  OUT OF boundss: (%d,%d)\n", record.posX, record.posY);
+      //}
     }
   }
 
