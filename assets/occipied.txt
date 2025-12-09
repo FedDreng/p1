@@ -1,1 +1,4 @@
-Mikkel,AB26654,4,1
+
+Mikkel,AB26654,1,5
+Mikkel,AB26654,1,5
+Mikkel,AB26654,1,5
