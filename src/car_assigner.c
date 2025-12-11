@@ -166,9 +166,9 @@ void assignCar(Car *car) {
   lot *chosen = chooseBestLot(car);
 
   if (chosen == NULL) {
-    // SHOULD DRAW ON THE WINDOW INSTEAD
+    // makes it so it draws on the window
     hasAssignedSpot = FALSE;
-    printf("⚠️No suitable parking spot available!\n");
+    // printf("⚠️No suitable parking spot available!\n");
     return;
   }
   hasAssignedSpot = TRUE;

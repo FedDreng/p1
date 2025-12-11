@@ -1,3 +1,4 @@
+#include "car_assigner.h"
 #include "mtest.h"
 
 TEST_CASE(my_first_test_case, {
