@@ -1,14 +1,21 @@
-# This file downloads mtest to the project.
-# To use it, just include the file in the top level CMakeLists.txt file, e.g.:
-#   include(cmake/mtest.cmake)
-
-# Setting this policy to NEW avoids a warning in newer versions of CMake.
+# This file downloads mtest to the project (fetches the git repo main branch).
 cmake_policy(SET CMP0135 NEW)
 
-# Installation of a testing framework - here the simple mtest.
 include(FetchContent)
-FetchContent_Declare(mtest
-        URL https://github.com/MortenSchou/mtest/archive/refs/tags/v0.2.0.zip
-        URL_HASH SHA256=bec1e90fb00a5bc155de12ed5ed39ea5d1a1b6fcfb6c80cce5ad3e38e360248c
+
+FetchContent_Declare(
+  mtest
+  GIT_REPOSITORY https://github.com/MortenSchou/mtest.git
+  GIT_TAG main
 )
 FetchContent_MakeAvailable(mtest)
+
+message(STATUS "mtest_SOURCE_DIR='${mtest_SOURCE_DIR}'")
+if(EXISTS "${mtest_SOURCE_DIR}/cmake/mtest.cmake")
+  message(STATUS "Including mtest helper from '${mtest_SOURCE_DIR}/cmake/mtest.cmake'")
+  include("${mtest_SOURCE_DIR}/cmake/mtest.cmake")
+else()
+  message(FATAL_ERROR "mtest.cmake not found at '${mtest_SOURCE_DIR}/cmake/mtest.cmake'.\n"
+                      "If you want to use a specific release that doesn't include the cmake helper,\n"
+                      "either vendor the file into your_project/cmake/mtest.cmake or switch the GIT_TAG.")
+endif()
