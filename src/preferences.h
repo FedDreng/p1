@@ -32,15 +32,16 @@ typedef enum {
 
 typedef enum { yesEV, noEV, EVELEMENTS } EVElements;
 
-extern changeType selectedType;
+// extern changeType selectedType;
 
 struct userPref {
   char username[21];
   char licensePlate[8]; // the user can save their license plate so the app can
                         // remember for future use
-  typeBoolean is_handicapped; // defines whether the license plate is attached to a
-                          // handicap car or not
-  typeBoolean is_ev; // defines whether the license plate is attached to an EV or not
+  typeBoolean is_handicapped; // defines whether the license plate is attached
+                              // to a handicap car or not
+  typeBoolean
+      is_ev; // defines whether the license plate is attached to an EV or not
   int prefClose; // the user can choose which parking lot they prefer to park at
                  // so the app will weigh that one higher when selecting parking
                  // spot

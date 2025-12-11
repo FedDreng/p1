@@ -16,12 +16,11 @@ int main(void) {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Assigner");
 
   SetTargetFPS(60);
-  //createParkingLotGrid();
+  // createParkingLotGrid();
 
   readParkingLotFile();
   loadOccipied();
   getPreferences(0);
-
 
   licenseplate();
 
@@ -31,6 +30,7 @@ int main(void) {
               .wants_uni_close = TRUE,
               .wants_exit_close = FALSE};
   */
+
   Car userCar = {0};
 
   while (!WindowShouldClose()) {
