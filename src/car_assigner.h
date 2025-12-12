@@ -17,4 +17,9 @@ void loadOccipied();
 void assigner(int x, int y);
 void assignCar(Car *car);
 Car createCarFromInput(Car current);
+
+// for testing.
+int calculateLotScore(const Car *car, const lot *L);
+lot *chooseBestLot(const Car *car);
+int isIsolated(int x, int y);
 #endif
