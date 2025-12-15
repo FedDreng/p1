@@ -12,13 +12,14 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
 
+const char *path = "../assets/parkingLots";
+
 int main(void) {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Assigner");
 
   SetTargetFPS(60);
   // createParkingLotGrid();
-
-  readParkingLotFile();
+  readParkingLotFile(path);
   loadOccipied();
   getPreferences(0);
 

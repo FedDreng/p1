@@ -10,11 +10,10 @@ lot parkingGrid[GRID_HEIGHT][GRID_WIDTH];
 
 int read_x = 0, read_y = 0;
 
-void readParkingLotFile() {
+void readParkingLotFile(char *path) {
 
   int countedFiles = 0;
 
-  const char *path = "../assets/parkingLots";
   struct dirent *entry;
 
   char *files[10];
