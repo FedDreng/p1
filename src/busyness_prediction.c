@@ -20,7 +20,9 @@ days getDay(char day[]);
 /*
  * Printer ud hvor travlt der er i det ønskede interval.
  */
-void printBusyness(Time chosenInput, BusynessSchedule schedule, int *step);
+int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step);
+//Check boundaries of 2D array
+int boundariesCheck(Time date);
 // Optegner en gui til at vælge en dag
 int getDayGui(int *step);
 // Optegner time intervallerner:
@@ -84,7 +86,7 @@ Time userinput(int *step) {
   return chosenTime;
 }
 
-void printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
+int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
   // Finder værdien fra 1 - 3 i vores schedule
   int busynessValue;
   // Printer den tilsvarende værdi.
@@ -93,6 +95,10 @@ void printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
     *step = 3;
   }
   if (*step == 3) {
+    if (boundariesCheck(chosenInput) == -1) {
+      perror("Invalid input");
+      return 1;
+    }
     busynessValue = schedule.data[chosenInput.Day][chosenInput.hour];
     switch (busynessValue) {
     case 1:
@@ -110,6 +116,16 @@ void printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
     default:
       printf("Could not find the busyness\n");
     }
+    return 0;
+  }
+  return 1;
+}
+
+int boundariesCheck(Time date) {
+  if (date.Day > 6 || date.hour > 5) {
+    return -1;
+  }else {
+    return 0;
   }
 }
 

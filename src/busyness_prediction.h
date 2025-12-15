@@ -21,5 +21,8 @@ typedef struct {
 } Time;
 
 int busynessCalculator();
+BusynessSchedule busynessSchedule();
+int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step);
+int boundariesCheck(Time date);
 
 #endif
