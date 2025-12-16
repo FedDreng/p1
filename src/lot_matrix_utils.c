@@ -256,7 +256,7 @@ void createParkingLotGrid() {
 }
 
 void loadOccipied() {
-  FILE *PloadOccipied = fopen("../assets/occipied. txt", "r");
+  FILE *PloadOccipied = fopen("../assets/occipied.txt", "r");
   if (!PloadOccipied) {
     return; // File doesn't exist yet, that's okay
   }
