@@ -225,8 +225,8 @@ int licenseplate(void) {
     fprintf(stderr, "curl request failed: %s\n", curl_easy_strerror(res));
   } else {
 #ifdef DEBUG
-    fuel_type = "El";
-    car_size = "Small";
+    fuel_type = "Benzin";
+    car_size = "";
 #else
     // Extract car info from JSON
     fuel_type = cutUpJson(chunk.response, "fuel_type");
