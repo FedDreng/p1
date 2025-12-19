@@ -255,6 +255,7 @@ void createParkingLotGrid() {
   }
 }
 
+// Loads the occipied
 void loadOccipied() {
   FILE *PloadOccipied = fopen("../assets/occipied.txt", "r");
   if (!PloadOccipied) {
@@ -266,29 +267,39 @@ void loadOccipied() {
 
   printf("\nLoading occupied spots:\n");
 
+  // Goes though each line
   while (fgets(line, sizeof(line), PloadOccipied)) {
 
+    // set a line length using sscanf and format specifiers.
+    // Set the amount of data needed (4) username, license x and y
     if (sscanf(line, "%49[^,],%19[^,],%d,%d", record.username, record.license,
                &record.posX, &record.posY) == 4) {
 
+      // Check if the parking spot coordinates are within the valid grid
+      // boundaries
       if (record.posX >= 0 && record.posX < read_x && record.posY >= 0 &&
           record.posY < read_y) {
 
+        // Mark the parking spot as occupied
         parkingGrid[record.posY][record.posX].occupied = TRUE;
+
+        // Store the username of the person occupying this spot
         strcpy(parkingGrid[record.posY][record.posX].username, record.username);
+
+        // Store the license plate number for the vehicle in this spot
         strcpy(parkingGrid[record.posY][record.posX].licensePlate,
                record.license);
 
+        // Log the parking assignment to console
         printf("  %s at [%d][%d]\n", record.username, record.posY, record.posX);
-      } // else {
-        // printf("  OUT OF boundss: (%d,%d)\n", record.posX, record.posY);
-      //}
+      }
     }
   }
 
   fclose(PloadOccipied);
 }
 
+// Define color of the enum identifier
 Color getParkingColor(ParkingType t) {
   switch (t) {
   case road:
@@ -306,13 +317,17 @@ Color getParkingColor(ParkingType t) {
   }
 }
 
+// Building graphical grid
 void showParkingGridRayLib() {
+  // setting amount of cells (Spots)
   int gridWidth = read_x * CELL_SIZE;
   int gridHeight = read_y * CELL_SIZE;
 
+  // Creating off set of the navbar
   int offsetX = (GetScreenWidth() - gridWidth) / 2;
   int offsetY = ((GetScreenHeight() - gridHeight) / 2) + 60 / 2;
 
+  // Displays text on the GUI
   const char *msg;
   if (hasAssignedSpot) {
     msg = "You have been assigned this spot";
@@ -325,9 +340,12 @@ void showParkingGridRayLib() {
              20, RED);
   }
 
+  // Goes though grid
   for (int y = 0; y < read_y; y++) {
     for (int x = 0; x < read_x; x++) {
+      // Using the defined grid
       lot *currentLot = &parkingGrid[y][x];
+      // Creating rectangle size and position
       Rectangle rect = {offsetX + x * CELL_SIZE, offsetY + y * CELL_SIZE,
                         CELL_SIZE, CELL_SIZE};
 

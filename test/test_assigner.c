@@ -81,9 +81,7 @@ static Car createTestCar(typeBoolean is_small, typeBoolean is_medium,
   return car;
 }
 
-// ============================================
 // Helper function to create a test lot
-// ============================================
 static lot createTestLot(int x, int y, ParkingType type, carSize lot_size,
                          typeBoolean occupied, int dist_to_uni,
                          int dist_to_exit) {
@@ -112,9 +110,7 @@ static lot createTestLot(int x, int y, ParkingType type, carSize lot_size,
   return L;
 }
 
-// ============================================
 // Helper function to verify spot was written to occipied. txt
-// ============================================
 static typeBoolean isSpotInOccupiedFile(const char *username,
                                         const char *licensePlate) {
   const char *paths[] = {"../assets/occipied.txt", "assets/occipied.txt",
@@ -152,10 +148,7 @@ static typeBoolean isSpotInOccupiedFile(const char *username,
   return FALSE;
 }
 
-// ============================================
 // SCORING SYSTEM TESTS
-// ============================================
-
 TEST_CASE(test_ev_spot_perfect_match, {
   initializeTestGrid();
   Car car = createTestCar(FALSE, TRUE, FALSE, TRUE, FALSE, FALSE);
@@ -239,10 +232,7 @@ TEST_CASE(test_grid_initialization, {
   }
 })
 
-// ============================================
 // FILE WRITING TESTS
-// ============================================
-
 TEST_CASE(test_single_car_written_to_file, {
   initializeTestGrid();
   Car car = createTestCar(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE);
