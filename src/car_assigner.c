@@ -59,13 +59,20 @@ int calculateLotScore(const Car *car, const lot *L) {
   // Calculate score
   int score = 0;
 
-  // Give Electric spot to car
+  // Give Electric spot to EV car, penalize EV spot for non-EV car
   if (car->is_ev) {
     if (L->type == EV)
       score += VERY_IMPORTANT;
     else
       score += NO_SCORE;
+  } else {
+    // Non-EV car - penalize EV spots so normal spots are preferred
+    if (L->type == EV)
+      score -= VERY_IMPORTANT; // Penalize EV spots for non-EV cars
+    else
+      score += NO_SCORE;
   }
+
   // Give handicapped spot to car
   if (car->is_handicapped) {
     if (L->type == handicaped)
@@ -121,7 +128,6 @@ int calculateLotScore(const Car *car, const lot *L) {
 
   return score;
 }
-
 // Using the calculated score to find the best parking spot
 lot *chooseBestLot(const Car *car) {
   // Pointer to the currently best parking lot found; NULL means none yet
@@ -223,6 +229,7 @@ Car createCarFromInput(Car current) {
   if (strcasecmp(fuel_type, "El") == 0) {
     input.car.isElectric = TRUE;
   }
+  input.car.isElectric = FALSE;
   current.is_ev = input.car.isElectric;
 
   // Get handicapped from user
