@@ -16,12 +16,11 @@ This repository is used to manage and track the development of our product using
 
 ### Team
 
-[FedDreng](https://github.com/FedDreng)
-[FredSullz](https://github.com/FredSullz)
 [MikkelDis](https://github.com/MikkelDis)
-[LukasLLaebel](https://github.com/LukasLLaebel/)
-[bila0418](https://github.com/bila0418)
-[BurnsAau](https://github.com/BurnsAau)
 [christianol1234](https://github.com/christianol1234)
-
+[bila0418](https://github.com/bila0418)
+[LukasLLaebel](https://github.com/LukasLLaebel/)
+[BurnsAau](https://github.com/BurnsAau)
+[FredSullz](https://github.com/FredSullz)
+[FedDreng](https://github.com/FedDreng)
 
