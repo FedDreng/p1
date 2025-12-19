@@ -24,6 +24,7 @@ CarInputState input = {0};
 // make preferences be bigger and more comparable sizes
 #define AMPLIFIER 10
 
+// check isolation
 int isIsolated(int x, int y) {
   // Check if left side is taken
   if (x > 0) {
@@ -45,16 +46,16 @@ int isIsolated(int x, int y) {
 int calculateLotScore(const Car *car, const lot *L) {
   // -- Sets spots that is not able to be occipied by this car --
   if (L->type == road || L->type == obstacle)
-    return IMPOSSIBLE;
+    return IMPOSSIBLE; //  returns -1000000
 
   if (L->occupied)
     return IMPOSSIBLE;
 
   if (!canFit(car->size, (lot *)L))
-    return IMPOSSIBLE;
+    return IMPOSSIBLE; //  returns -1000000
 
   if (!car->is_handicapped && L->type == handicaped)
-    return IMPOSSIBLE;
+    return IMPOSSIBLE; //  returns -1000000
 
   // Calculate score
   int score = 0;
@@ -62,68 +63,68 @@ int calculateLotScore(const Car *car, const lot *L) {
   // Give Electric spot to EV car, penalize EV spot for non-EV car
   if (car->is_ev) {
     if (L->type == EV)
-      score += VERY_IMPORTANT;
+      score += VERY_IMPORTANT; // adds 700 to score
     else
-      score += NO_SCORE;
+      score += NO_SCORE; // adds 0 score
   } else {
     // Non-EV car - penalize EV spots so normal spots are preferred
     if (L->type == EV)
       score -= VERY_IMPORTANT; // Penalize EV spots for non-EV cars
     else
-      score += NO_SCORE;
+      score += NO_SCORE; // Score gets 0 added
   }
 
   // Give handicapped spot to car
   if (car->is_handicapped) {
     if (L->type == handicaped)
-      score += IMPORTANT;
+      score += IMPORTANT; // adds 600 to score
     else
-      score += NO_SCORE;
+      score += NO_SCORE; // adds 0 to score
   }
 
   // -- size finder --
   // if it is large
   if (car->size.is_large) {
     if (L->lot_size.is_large)
-      score += FIRST_SPOT;
+      score += FIRST_SPOT; // Gets 300 added to score
     else if (L->lot_size.is_medium)
-      score += SECOND_SPOT;
+      score += SECOND_SPOT; // Gets 250 added to score
     else if (L->lot_size.is_small)
-      score += THIRD_SPOT;
+      score += THIRD_SPOT; // Gets 200 added to score
   }
   // if it is medium
   if (car->size.is_medium) {
     if (L->lot_size.is_medium)
-      score += FIRST_SPOT;
+      score += FIRST_SPOT; // Gets 300 added to score
     else if (L->lot_size.is_large)
-      score += SECOND_SPOT;
+      score += SECOND_SPOT; // Gets 250 added to score
     else if (L->lot_size.is_small)
-      score += THIRD_SPOT;
+      score += THIRD_SPOT; // Gets 200 added to score
   }
   // if it is small
   if (car->size.is_small) {
     if (L->lot_size.is_small)
-      score += FIRST_SPOT;
+      score += FIRST_SPOT; // Gets 300 added to score
     else if (L->lot_size.is_medium)
-      score += SECOND_SPOT;
+      score += SECOND_SPOT; // Gets 250 added to score
     else if (L->lot_size.is_large)
-      score += THIRD_SPOT;
+      score += THIRD_SPOT; // Gets 200 added to score
   }
 
   // Give spot to car if its isolated for other cars
   if (car->want_Isolated) {
     if (isIsolated(L->x, L->y))
-      score += (currentUser.prefIsolated * AMPLIFIER);
+      score += (currentUser.prefIsolated *
+                AMPLIFIER); // gets a number from 0 - 9 and times it with 10
   }
 
-  // Need Place of universety first
-  // Maybe just place uni to always be at the left
-  if (!car->placementPref) { // false == dist_to_university
-    score -= L->dist_to_university;
+  // never got implemented...
+  if (!car->placementPref) {        // false == dist_to_university
+    score -= L->dist_to_university; // subtracts distance value to score
   }
 
-  if (car->placementPref) { // true == dist_to_exit
-    score -= L->dist_to_exit;
+  if (car->placementPref) {   // true == dist_to_exit
+    score -= L->dist_to_exit; // subtracts distance value to score
   }
 
   return score;
@@ -250,6 +251,8 @@ Car createCarFromInput(Car current) {
   return current;
 }
 
+// Mouse press assignes a spot in the grid
+// Offset i not dynamic and does not work with the new dynmaic map
 void mouseAssigner(Car *car) {
 
   // Calculate same grid offsets as draw function
