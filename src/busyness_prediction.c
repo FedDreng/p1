@@ -4,82 +4,78 @@
 #include <stdio.h>
 #include <string.h>
 /*
- *Prototype til 2D array til at kunne kategorisere travlheden.
+ *Prototype of function that returns 2D array with categorized data
  *
  */
 BusynessSchedule busynessSchedule();
 /*
- * Prototype til en funktion som tager data
- * Bruger dataen til at returnere en struct, hvorfra travlhed kan indlæses
+ * Prototype of a function, wich holds the functions to draw days and hours gui
+ * Creates a time struct with information about the chosen time from the user.
+ * Takes a step describing where in the process of the function it is
  */
 Time userinput(int *step);
 /*
- * Returnere enum typen tilsvarende den indtastet dato.
- */
-days getDay(char day[]);
-/*
- * Printer ud hvor travlt der er i det ønskede interval.
+ * Draws a text about how busy it is from the chosen user input
+ * Takes a time struct describing the day and hour index.
+ * Takes a BusynessSchedule struct, having a 2D array of data about how busy it is at times.
+ * Takes a step describing where in the process of the function it is
  */
 int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step);
-//Check boundaries of 2D array
+//Check boundaries of 2D array, takes a time struct to check from.
 int boundariesCheck(Time date);
-// Optegner en gui til at vælge en dag
+// Draws a GUI of all the days, taking in a pointer to a step variable, updating it accordingly
 int getDayGui(int *step);
-// Optegner time intervallerner:
+// Draws the hour intervals, also takes the step pointer and updating it accordingly.
 int getHourGui(int *step);
 
-// Udregn travlhed (Hoved funktion)
+// Calculates the busyness of the parking lot. The main part of the function
 int busynessCalculator() {
-  // Variable til at holde styr på hvor langt man er.
+  // The step variable to see where in the function the user is.
   static int step = 0;
-  // Starter overskrift
+  // Draws the title of the page
   DrawText("Choose a day and a time.", 280, 80, 20, BLACK);
   BusynessSchedule busyness = busynessSchedule();
-  // Optegner alle elementerne til at vælge tidsrum.
+  // Draws all the elements of the program, getting the user input
   Time chosenTime = userinput(&step);
+  //Draws the actual busyness of the chosen time
   printBusyness(chosenTime, busyness, &step);
 }
 
-// 2D array til at kunne kategorisere travlheden.
+// 2D array to catogorise the data
 BusynessSchedule busynessSchedule() {
-  /*Kategorisere de syge dage i 6 intervallet af 4 timer hvor i
-   *man kan indtaste travlheden (Det inddeles i intervaller af 4 timer da 7 * 24
-   * tidrum ville være besværligt at indtaste)
+  /*Catogorises the 7 days into 6 intervals of 4 hours.
    *
-   *De bliver givet en værdi fra 1 - 3, hvor 1 er meget stille og 3 er meget
-   * travlt.
+   *It will be given a value from 1 - 3, where the 1 is not very busyness and the 3 is very busy
    */
-  BusynessSchedule b = {.data = {// Mandag
+  BusynessSchedule b = {.data = {// Monday
                                  {1, 1, 2, 3, 1, 1},
-                                 // Tirsdag
+                                 // Tuesday
                                  {1, 1, 3, 2, 1, 1},
-                                 // Onsdag
+                                 // Wednesday
                                  {1, 1, 3, 2, 1, 1},
-                                 // Torsdag
+                                 // Thursday
                                  {1, 1, 3, 2, 1, 1},
-                                 // Fredag
+                                 // Friday
                                  {1, 1, 2, 2, 1, 1},
-                                 // Lørdag
+                                 // Saturday
                                  {1, 1, 1, 1, 1, 1},
-                                 // Søndag
+                                 // Sunday.
                                  {1, 1, 1, 1, 1, 1}}};
 
   return b;
 }
 
-// Udførelse af userinput funktion
+// Ge the user input
 Time userinput(int *step) {
-  // Tekststeng til at opbevare valg af dag.
-  char day[3];
-  // Index til enum
+  // Index to day
   int dayIndex = 0;
-  // Index til time interval
+  // Index of hour interval
   int hourIndex = 0;
-  // Tegn dag muligheder og få input
+  // Draw all the days, returning what was pressed
   dayIndex = getDayGui(step);
-  // Tegn time muligheder og få input
+  // Draw all the hours, returning the hour interval
   hourIndex = getHourGui(step);
-  // Opret struct med valgt info.
+  // Creates struct with the returend data and returns it.
   Time chosenTime;
   chosenTime.Day = dayIndex;
   chosenTime.hour = hourIndex;
@@ -87,13 +83,13 @@ Time userinput(int *step) {
 }
 
 int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
-  // Finder værdien fra 1 - 3 i vores schedule
   int busynessValue;
-  // Printer den tilsvarende værdi.
+  // When the button is clicked, the step updates to 3.
   if (GuiButton((Rectangle){350, 350, 100, 25}, "Predict busyness") &&
       *step == 2) {
     *step = 3;
   }
+  // When the step is 3, the busyness is drawn.
   if (*step == 3) {
     if (boundariesCheck(chosenInput) == -1) {
       perror("Invalid input");
@@ -121,6 +117,7 @@ int printBusyness(Time chosenInput, BusynessSchedule schedule, int *step) {
   return 1;
 }
 
+//Checks the boundaries
 int boundariesCheck(Time date) {
   if (date.Day > 6 || date.hour > 5) {
     return -1;
@@ -131,39 +128,39 @@ int boundariesCheck(Time date) {
 
 int getDayGui(int *step) {
   static int dayIndex = 0;
-  // Optegn tekst til at beskrive det er dage
+  // Text to describe the user what to do
   DrawText("Which day would you like to check?", 220, 160, 20, BLACK);
-  // Optegne mandag knap:
+  // Draw monday button
   if (GuiButton((Rectangle){12, 200, 100, 25}, "Monday")) {
     dayIndex = 0;
     *step = 1;
   }
-  // Optegn tirsdag:
+  // Draw tuesday button
   if (GuiButton((Rectangle){124, 200, 100, 25}, "Tuesday")) {
     dayIndex = 1;
     *step = 1;
   }
-  // Optegn onsdag:
+  // Draw wednesday button
   if (GuiButton((Rectangle){236, 200, 100, 25}, "Wednesday")) {
     dayIndex = 2;
     *step = 1;
   }
-  // Optegn torsdag:
+  // Draw Thursday button
   if (GuiButton((Rectangle){348, 200, 100, 25}, "Thursday")) {
     dayIndex = 3;
     *step = 1;
   }
-  // Optegn fredag:
+  // Draw friday button
   if (GuiButton((Rectangle){460, 200, 100, 25}, "Friday")) {
     dayIndex = 4;
     *step = 1;
   }
-  // Optegn lørdag:
+  // Draw saturday button
   if (GuiButton((Rectangle){572, 200, 100, 25}, "Saturday")) {
     dayIndex = 5;
     *step = 1;
   }
-  // Optegn søndag:
+  // Draw sunday button
   if (GuiButton((Rectangle){684, 200, 100, 25}, "Sunday")) {
     dayIndex = 6;
     *step = 1;
