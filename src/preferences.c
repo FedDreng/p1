@@ -54,9 +54,8 @@ const char *EVElementNames[EVELEMENTS] = {
   "EV"
 };
 
-// our own strupr() because that funciton is not working on every PC because it
-// is an outdated function
-char *strupr(char *s) {
+
+char *strupr(char *s) { // simple function to turn lowercase into uppercase chars
   if (!s)
     return NULL;
   char *p = s;
@@ -68,7 +67,7 @@ char *strupr(char *s) {
 }
 
 void getPreferences(int userProfile) {   // function to read preference profiles from file
-  if (userProfile == 0) { // when called with argument 0 should read all profiles and create struct to house them
+  if (userProfile == 0) { // when called with argument 0 should read file and count amount of profiles
     printf("We attempt to read our preference txt file and print the contents\n");
     fUserTemp = fopen(prefFileLocation, "r");
     numberOfProfiles = 0;
@@ -90,12 +89,13 @@ void getPreferences(int userProfile) {   // function to read preference profiles
     // }
     //fclose(fUserPref);
 
-    if (strlen(currentUser.username) < 1) {
+    if (strlen(currentUser.username) < 1) { // if no profile is set as current, reads first (default) profile to current
       getPreferences(1);
       currentUserNR = 1;
     }
 
   } else if (userProfile > 0) { // when called with an argument other than 0 should read the specified profile if it exists
+    fclose(fUserPref);
     fUserPref = fopen(prefFileLocation, "r");
     for (int i = 1; i <= userProfile; i++) {
       if (i < userProfile) {
@@ -107,8 +107,10 @@ void getPreferences(int userProfile) {   // function to read preference profiles
       } else if (i == userProfile) {
         if (fscanf(fUserPref, "%s , %s , %d , %d , %d , %d", currentUser.username, currentUser.licensePlate, &currentUser.is_handicapped, &currentUser.is_ev, &currentUser.prefClose, &currentUser.prefIsolated) == 6) {
           printf("Selected profile read correctly.\n");
+          currentUserNR = i;
         } else {
           perror("Could not read specified profile.\n");
+          getPreferences(currentUserNR);
         }
       }
     }
@@ -117,12 +119,13 @@ void getPreferences(int userProfile) {   // function to read preference profiles
 }
 
 void savePreferences(typeBoolean makeDefault) { // function to save preference profiles to file
-  if (makeDefault == 0) {
+  if (makeDefault == 0) { // when called with argument 0 it adds the profile at the end of the file
     fclose(fUserPref);
     fUserPref = fopen(prefFileLocation, "a");
     fprintf(fUserPref, "\n%s , %s , %d , %d , %s , %s", tempName, strupr(tempPlate), tempHandi, tempEV, tempClose, tempIso);
     fclose(fUserPref);
-  } else if (makeDefault == 1) {
+
+  } else if (makeDefault == 1) { // when called with argument 1 it adds the profile at the top of the file
     fclose(fUserPref);
 
     struct userPref *allUsers = calloc(numberOfProfiles+1, sizeof(struct userPref));
@@ -165,8 +168,7 @@ void savePreferences(typeBoolean makeDefault) { // function to save preference p
   }
 }
 
-void setPreferences() {
-  // function to alter a specific profile
+void setPreferences() { // function to alter data in a specific profile
   struct userPref *allUsers = calloc(numberOfProfiles+1, sizeof(struct userPref));
   fclose(fUserPref);
   fUserPref = fopen(prefFileLocation, "r");
@@ -211,12 +213,9 @@ void setPreferences() {
   free(allUsers);
 }
 
-void changePreferences() {
+void changePreferences() { // function which draws the constant menu elements for preference GUI
   DrawText(TextFormat("User Preferences"/*" Current Option %d"*/, prefOption), 280, 80, 24, BLACK);
   changePrefGui();
-}
-
-int changePrefGui() {
   if (GuiButton((Rectangle){(GetScreenWidth()-80), 70, 60, 20}, "Return")) {
     tempName[0] = '\0';
     tempPlate[0] = '\0';
@@ -227,13 +226,15 @@ int changePrefGui() {
     if (prefOption < 0) {
       selectedElement = ChooseLot;
       prefOption = -1;
-      return 0;
+      return;
     }
     prefOption = -1;
   }
+}
 
-  switch (prefOption) {
-    default:
+int changePrefGui() { // function which draws the specific menu elements for preference GUI
+  switch (prefOption) { // switch checking which submenu GUI to draw
+    default: // main preference menu
       DrawText("Choose what to do:", 300, 100, 20, BLACK);
       int elementGap = 15;
       int elementWidth = 200;
@@ -261,7 +262,7 @@ int changePrefGui() {
       }
     }
       break;
-    case 0:
+    case 0: // submenu for creating a new profile
       boxX1 = GetScreenWidth()*1/3-200;
       boxX2 = GetScreenWidth()*2/3-200;
 
@@ -306,43 +307,47 @@ int changePrefGui() {
         tempIso[0] = '\0';
       }
       break;
-    case 1:
+    case 1: // submenu for changing username
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
       DrawText("Input New Name", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempName, 21, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        for (int i = 0; i <= strlen(tempName); i++) {
-          if (i == strlen(tempName)) {
-            currentUser.username[i] = '\0';
-          } else {
-            currentUser.username[i] = tempName[i];
+        if (strcmp(tempName,currentUser.username) == 0) {
+          for (int i = 0; i <= strlen(tempName); i++) {
+            if (i == strlen(tempName)) {
+              currentUser.username[i] = '\0';
+            } else {
+              currentUser.username[i] = tempName[i];
+            }
           }
+          setPreferences();
+          tempName[0] = '\0';
         }
-        setPreferences();
-        tempName[0] = '\0';
       }
       break;
-    case 2:
+    case 2: // submenu for changing license plate
       DrawText(TextFormat("Current Profile and License Plate: %s, %s", currentUser.username, currentUser.licensePlate), 200, 100, 20, BLACK);
       DrawText("Input New License Plate", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempPlate, 8, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        for (int i = 0; i <= strlen(tempPlate); i++) {
-          if (i == strlen(tempPlate)) {
-            currentUser.licensePlate[i] = '\0';
-          } else {
-            currentUser.licensePlate[i] = tempPlate[i];
+        if (strcmp(tempPlate,currentUser.licensePlate) == 0) {
+          for (int i = 0; i <= strlen(tempPlate); i++) {
+            if (i == strlen(tempPlate)) {
+              currentUser.licensePlate[i] = '\0';
+            } else {
+              currentUser.licensePlate[i] = tempPlate[i];
+            }
           }
+          setPreferences();
+          tempPlate[0] = '\0';
         }
-        setPreferences();
-        tempPlate[0] = '\0';
       }
       break;
-    case 3:
+    case 3: // submenu for changing handicapped status
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
       if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, handicappedElementNames[currentUser.is_handicapped])) {
         currentUser.is_handicapped = !currentUser.is_handicapped;
@@ -351,7 +356,7 @@ int changePrefGui() {
         setPreferences();
       }
       break;
-    case 4:
+    case 4: // submenu for changing EV status
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
       if (GuiButton((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, EVElementNames[currentUser.is_ev])) {
         currentUser.is_ev = !currentUser.is_ev;
@@ -360,43 +365,48 @@ int changePrefGui() {
         setPreferences();
       }
       break;
-    case 5:
+    case 5: // submenu for changing proximity preference
       DrawText(TextFormat("Current Profile and Proximity Preference: %s, %d", currentUser.username, currentUser.prefClose), 200, 100, 20, BLACK);
       DrawText("Input New Proximity Preference", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempClose, 2, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        currentUser.prefClose = strtod(tempClose, &intEnd);
-        setPreferences();
+        if (strtod(tempClose, &intEnd) != currentUser.prefClose) {
+          currentUser.prefClose = strtod(tempClose, &intEnd);
+          setPreferences();
+        }
         tempClose[0] = '\0';
       }
       break;
-    case 6:
+    case 6: // submenu for changing isolation preference
       DrawText(TextFormat("Current Profile and Isolation Preference: %s, %d", currentUser.username, currentUser.prefIsolated), 200, 100, 20, BLACK);
       DrawText("Input New Isolation Preference", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempIso, 2, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        currentUser.prefIsolated = strtod(tempIso, &intEnd);
-        setPreferences();
-        tempIso[0] = '\0';
+        if (strtod(tempIso, &intEnd) != currentUser.prefIsolated) {
+          currentUser.prefIsolated = strtod(tempIso, &intEnd);
+          setPreferences();
+          tempIso[0] = '\0';
+        }
       }
       break;
-    case 7:
+    case 7: // submenu for changing active profile
       DrawText(TextFormat("Current Profile: %s", currentUser.username), 290, 100, 20, BLACK);
       DrawText("Input Profile Number", 300, 200, 20, BLACK);
       if (GuiTextBox((Rectangle){GetScreenWidth()/2-200, 220, 400, 30}, tempName, 21, textBoxEditable[0])) {
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        getPreferences(0);
-        if (strtod(tempName, &intEnd) <= numberOfProfiles && tempName[0] != '\0' && strtod(tempName, &intEnd) != 0) {
-          getPreferences(strtod(tempName, &intEnd));
-          currentUserNR = strtod(tempName, &intEnd);
+        if (strtod(tempName, &intEnd) != currentUserNR) {
+          getPreferences(0);
+          if (strtod(tempName, &intEnd) <= numberOfProfiles && tempName[0] != '\0' && strtod(tempName, &intEnd) != 0) {
+            getPreferences(strtod(tempName, &intEnd));
+          }
+          tempName[0] = '\0';
         }
-        tempName[0] = '\0';
       }
       break;
   }
