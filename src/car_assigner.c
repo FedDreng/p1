@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// sets input struct to empty
 CarInputState input = {0};
 
 // -- Dont place on spot --
@@ -155,12 +156,13 @@ lot *chooseBestLot(const Car *car) {
       }
     }
   }
-
   // Return the best matching lot, or NULL if none were suitable
   return best;
 }
+// function prototype
 void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY);
 
+// Place chosen spot
 void assignCar(Car *car) {
 
   // Reset blinking for all spots first
@@ -205,6 +207,7 @@ void OccipiedSpot(char *username, char *licensePlate, int *posX, int *posY) {
   fclose(fptr);
 }
 
+// building car
 Car createCarFromInput(Car current) {
   // get input from Car_input
   input = GetCarInput(input);
