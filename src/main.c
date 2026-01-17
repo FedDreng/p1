@@ -23,6 +23,13 @@ int main(void) {
   loadOccipied();
   getPreferences(0);
 
+  printf("\n=== DEBUG ===\n");
+  printf("currentUser.username: '%s'\n", currentUser.username);
+  printf("currentUser.licensePlate: '%s'\n", currentUser.licensePlate);
+  printf("currentUserNR: %d\n", currentUserNR);
+  printf("numberOfProfiles: %d\n", numberOfProfiles);
+  printf("=== END DEBUG ===\n\n");
+
   licenseplate();
 
   /* static car
