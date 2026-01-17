@@ -314,7 +314,7 @@ int changePrefGui() { // function which draws the specific menu elements for pre
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        if (strcmp(tempName,currentUser.username) == 0) {
+        if (strcmp(tempName,currentUser.username) != 0) {
           for (int i = 0; i <= strlen(tempName); i++) {
             if (i == strlen(tempName)) {
               currentUser.username[i] = '\0';
@@ -334,7 +334,7 @@ int changePrefGui() { // function which draws the specific menu elements for pre
         textBoxEditable[0] = !textBoxEditable[0];
       }
       if (GuiButton((Rectangle){GetScreenWidth()/2+205, 220, 50, 30}, "Change")) {
-        if (strcmp(tempPlate,currentUser.licensePlate) == 0) {
+        if (strcmp(tempPlate,currentUser.licensePlate) != 0) {
           for (int i = 0; i <= strlen(tempPlate); i++) {
             if (i == strlen(tempPlate)) {
               currentUser.licensePlate[i] = '\0';

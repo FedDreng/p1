@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DEBUG
+//#define DEBUG
 // Global variables to hold car data retrieved from the API
 char *fuel_type = NULL;
 char *car_size = NULL;
@@ -68,7 +68,7 @@ int licenseplate(void) {
 
   // Build the API request path with the license plate
   wchar_t urlPath[256];
-  swprintf(urlPath, 256, L"/vehicles?registration_number=%S", plate);
+  swprintf(urlPath, 256, L"/vehicles?registration_number=%s", plate);
 
   // Open an HTTP GET request
   HINTERNET hRequest =
@@ -84,7 +84,7 @@ int licenseplate(void) {
 #ifdef DEBUG
   const wchar_t *headers = L"X-AUTH-TOKEN: Here-Should-The-Key-Be";
 #else
-  const wchar_t *headers = L"X-AUTH-TOKEN: qvlm33g45y7sv9sm3qe7rgp1llkg54gq"
+  const wchar_t *headers = L"X-AUTH-TOKEN: g6fwk6lk29ia152agsky2l5pca8gkc2x";
 #endif
 
   WinHttpAddRequestHeaders(hRequest, headers, -1L, WINHTTP_ADDREQ_FLAG_ADD);
@@ -121,8 +121,8 @@ int licenseplate(void) {
   fuel_type = "El";
   car_size = "Small";
 #else
-  fuel_type = cutUpJson(chunk.response, "fuel_type");
-  car_size = cutUpJson(chunk.response, "chassis_type");
+  fuel_type = cutUpJson(response, "fuel_type");
+  car_size = cutUpJson(response, "chassis_type");
 #endif
 
   // Print results
