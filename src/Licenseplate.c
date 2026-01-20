@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define DEBUG
+#define DEBUG
 // Global variables to hold car data retrieved from the API
 char *fuel_type = NULL;
 char *car_size = NULL;
@@ -84,7 +84,7 @@ int licenseplate(void) {
 #ifdef DEBUG
   const wchar_t *headers = L"X-AUTH-TOKEN: Here-Should-The-Key-Be";
 #else
-  const wchar_t *headers = L"X-AUTH-TOKEN: g6fwk6lk29ia152agsky2l5pca8gkc2x";
+  const wchar_t *headers = L"X-AUTH-TOKEN: qvlm33g45y7sv9sm3qe7rgp1llkg54gq";
 #endif
 
   WinHttpAddRequestHeaders(hRequest, headers, -1L, WINHTTP_ADDREQ_FLAG_ADD);

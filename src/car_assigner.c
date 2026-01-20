@@ -232,8 +232,9 @@ Car createCarFromInput(Car current) {
   // If cartype is not defined by licensePlate take user input
   if (strcasecmp(fuel_type, "El") == 0) {
     input.car.isElectric = TRUE;
+  } else {
+    input.car.isElectric = FALSE;
   }
-  input.car.isElectric = FALSE;
   current.is_ev = input.car.isElectric;
 
   // Get handicapped from user

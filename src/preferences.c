@@ -179,10 +179,12 @@ void setPreferences() { // function to alter data in a specific profile
     if (i+1 == currentUserNR) {
       printf("\ncurrent: %s, allUsers: %s i: %d", currentUser.username, allUsers[i].username, i);
       printf("\ncurrent: %s, allUsers: %s\n", currentUser.licensePlate, allUsers[i].licensePlate);
-      for (int h = 0; h <= strlen(tempName); h++) {
-        if (h == strlen(tempName)) {
+      for (int h = 0; h <= strlen(currentUser.username); h++) {
+        if (h == strlen(currentUser.username)) {
+          printf("h = %d", h);
           allUsers[i].username[h] = '\0';
         } else {
+          printf("h = %d", h);
           allUsers[i].username[h] = currentUser.username[h];
         }
       }
